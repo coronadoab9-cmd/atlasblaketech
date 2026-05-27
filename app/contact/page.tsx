@@ -13,22 +13,24 @@ export default function ContactPage() {
           </p>
 
           <h1 className="text-5xl md:text-7xl font-bold leading-tight max-w-5xl mb-8">
-            Let’s modernize your operations.
+            Let’s talk about your operations.
           </h1>
 
           <p className="text-[#B6C2D1] text-xl leading-9 max-w-3xl">
-            Whether you're looking to improve dispatch workflows,
-            digital tickets, delivery visibility, or operational reporting,
-            AtlasBlake Technologies is ready to help.
+            Tell us about your dispatch, delivery, fleet, or eTicket workflows
+            and we’ll show you how AtlasBlake Technologies can help modernize
+            your operations.
           </p>
         </div>
       </section>
 
       <section className="px-6 py-24">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16">
+          
+          {/* LEFT SIDE */}
           <div>
-            <h2 className="text-3xl font-bold mb-8">
-              Contact Information
+            <h2 className="text-4xl font-bold mb-8">
+              Get in touch
             </h2>
 
             <div className="space-y-8">
@@ -43,67 +45,49 @@ export default function ContactPage() {
               />
 
               <InfoCard
-                title="Location"
-                value="Texas, USA"
-              />
-
-              <InfoCard
-                title="Support"
-                value="Available for demos and onboarding"
+                title="Industry Focus"
+                value="Concrete, trucking, logistics & construction operations"
               />
             </div>
           </div>
 
-          <form className="bg-[#071225] border border-[#12315F] rounded-3xl p-8 space-y-5">
-            <Input label="Full Name" placeholder="John Smith" />
-            <Input label="Company Name" placeholder="ABC Ready Mix" />
-            <Input label="Email" placeholder="john@company.com" />
-            <Input label="Phone" placeholder="(555) 555-5555" />
+          {/* FORM */}
+          <div className="bg-[#071225] border border-[#12315F] rounded-[32px] p-10 shadow-[0_0_60px_rgba(0,91,255,0.08)]">
+            <form className="space-y-6">
+              
+              <Input label="Full Name" type="text" />
+              
+              <Input label="Company" type="text" />
 
-            <div>
-              <label className="block mb-2 font-semibold">
-                Message
-              </label>
+              <Input label="Email Address" type="email" />
 
-              <textarea
-                className="w-full min-h-40 rounded-xl bg-[#020817] border border-[#12315F] px-4 py-3 outline-none focus:border-[#005BFF]"
-                placeholder="Tell us about your operation and what you're looking to improve..."
-              />
-            </div>
+              <Input label="Phone Number" type="text" />
 
-            <button
-              type="button"
-              className="w-full bg-[#005BFF] hover:bg-[#0047cc] transition px-8 py-5 rounded-xl text-lg font-bold shadow-[0_0_35px_rgba(0,91,255,0.35)]"
-            >
-              Send Message →
-            </button>
-          </form>
+              <div>
+                <label className="block text-sm text-[#B6C2D1] mb-3">
+                  Message
+                </label>
+
+                <textarea
+                  rows={6}
+                  className="w-full bg-[#020817] border border-[#12315F] rounded-2xl px-5 py-4 outline-none focus:border-[#005BFF] transition resize-none"
+                  placeholder="Tell us about your operations..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-[#005BFF] hover:bg-[#0047cc] transition py-5 rounded-2xl text-lg font-bold shadow-[0_0_35px_rgba(0,91,255,0.35)]"
+              >
+                Submit Inquiry →
+              </button>
+            </form>
+          </div>
         </div>
       </section>
 
       <Footer />
     </main>
-  );
-}
-
-function Input({
-  label,
-  placeholder,
-}: {
-  label: string;
-  placeholder: string;
-}) {
-  return (
-    <div>
-      <label className="block mb-2 font-semibold">
-        {label}
-      </label>
-
-      <input
-        className="w-full rounded-xl bg-[#020817] border border-[#12315F] px-4 py-3 outline-none focus:border-[#005BFF]"
-        placeholder={placeholder}
-      />
-    </div>
   );
 }
 
@@ -115,14 +99,35 @@ function InfoCard({
   value: string;
 }) {
   return (
-    <div className="bg-[#071225] border border-[#12315F] rounded-2xl p-6">
-      <p className="text-[#005BFF] font-semibold mb-2">
+    <div className="bg-[#071225] border border-[#12315F] rounded-3xl p-8">
+      <p className="text-[#005BFF] font-semibold mb-3">
         {title}
       </p>
 
-      <p className="text-[#B6C2D1] text-lg">
+      <p className="text-[#F8FAFC] text-xl leading-8">
         {value}
       </p>
+    </div>
+  );
+}
+
+function Input({
+  label,
+  type,
+}: {
+  label: string;
+  type: string;
+}) {
+  return (
+    <div>
+      <label className="block text-sm text-[#B6C2D1] mb-3">
+        {label}
+      </label>
+
+      <input
+        type={type}
+        className="w-full bg-[#020817] border border-[#12315F] rounded-2xl px-5 py-4 outline-none focus:border-[#005BFF] transition"
+      />
     </div>
   );
 }
