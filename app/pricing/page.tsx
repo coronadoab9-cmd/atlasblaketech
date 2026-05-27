@@ -7,59 +7,81 @@ export default function PricingPage() {
       <Navbar />
 
       <section className="px-6 py-28 border-b border-[#12315F] bg-[#030B1C]">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-[#005BFF] font-semibold mb-4">Pricing</p>
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-[#005BFF] font-semibold mb-4">
+            Pricing
+          </p>
 
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight max-w-5xl mb-8">
-            Flexible pricing for operations teams ready to modernize.
+          <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-8">
+            Flexible software plans built for operations teams.
           </h1>
 
-          <p className="text-[#B6C2D1] text-xl leading-9 max-w-3xl">
-            Start with the tools your operation needs today and expand as your dispatch, delivery, and ticketing workflows grow.
+          <p className="text-[#B6C2D1] text-xl leading-9 max-w-3xl mx-auto">
+            AtlasBlake Technologies will offer scalable pricing based on
+            company size, operational workflows, users, and purchased modules.
           </p>
         </div>
       </section>
 
       <section className="px-6 py-24">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
-          <Plan
-            name="Starter"
-            price="Custom"
-            description="For small teams moving away from paper tickets and manual updates."
+
+          <PricingCard
+            title="Starter"
+            subtitle="Small operations"
             features={[
-              "Digital ticket records",
               "Basic dispatch visibility",
-              "Customer and job records",
-              "PDF ticket output",
+              "Digital ticket workflows",
+              "Limited users",
+              "Basic reporting",
+              "Email support",
             ]}
           />
 
-          <Plan
-            name="Operations"
-            price="Custom"
-            featured
-            description="For growing companies that need real-time dispatch and delivery visibility."
+          <FeaturedPricingCard
+            title="Operations"
+            subtitle="Growing companies"
             features={[
-              "Everything in Starter",
-              "Operations dashboard",
-              "Load and delivery tracking",
-              "Reporting tools",
-              "Multi-user access",
+              "Dispatch management",
+              "eTicket system",
+              "Fleet visibility",
+              "Operational reporting",
+              "Role-based users",
+              "Priority support",
             ]}
           />
 
-          <Plan
-            name="Enterprise"
-            price="Custom"
-            description="For companies that need custom integrations, workflows, and advanced reporting."
+          <PricingCard
+            title="Enterprise"
+            subtitle="Large operations"
             features={[
-              "Everything in Operations",
-              "Custom integrations",
+              "Custom workflows",
               "Advanced reporting",
-              "API workflows",
-              "Dedicated setup support",
+              "Multi-location support",
+              "Enterprise onboarding",
+              "Custom integrations",
+              "Dedicated support",
             ]}
           />
+
+        </div>
+      </section>
+
+      <section className="px-6 py-24 border-t border-[#12315F] bg-[#030B1C]">
+        <div className="max-w-5xl mx-auto text-center">
+          <p className="text-[#005BFF] font-semibold mb-4">
+            Modular Platform
+          </p>
+
+          <h2 className="text-5xl font-bold leading-tight mb-8">
+            Only pay for the modules your company needs.
+          </h2>
+
+          <p className="text-[#B6C2D1] text-xl leading-9">
+            Future customers will be able to purchase dispatch,
+            eTicket, reporting, workflow automation, and operational
+            modules independently based on their business requirements.
+          </p>
         </div>
       </section>
 
@@ -68,55 +90,95 @@ export default function PricingPage() {
   );
 }
 
-function Plan({
-  name,
-  price,
-  description,
+function PricingCard({
+  title,
+  subtitle,
   features,
-  featured = false,
 }: {
-  name: string;
-  price: string;
-  description: string;
+  title: string;
+  subtitle: string;
   features: string[];
-  featured?: boolean;
 }) {
   return (
-    <div
-      className={`rounded-3xl p-8 border ${
-        featured
-          ? "bg-[#005BFF] border-[#005BFF] shadow-[0_0_60px_rgba(0,91,255,0.35)]"
-          : "bg-[#071225] border-[#12315F]"
-      }`}
-    >
-      <h2 className="text-3xl font-bold mb-3">{name}</h2>
-      <p className={featured ? "text-white/80 mb-8" : "text-[#B6C2D1] mb-8"}>
-        {description}
+    <div className="bg-[#071225] border border-[#12315F] rounded-[32px] p-10">
+      <p className="text-[#005BFF] font-semibold mb-3">
+        {subtitle}
       </p>
 
-      <div className="text-5xl font-bold mb-8">{price}</div>
+      <h2 className="text-4xl font-bold mb-8">
+        {title}
+      </h2>
 
-      <a
-        href="/demo"
-        className={`block text-center rounded-xl px-6 py-4 font-bold mb-8 ${
-          featured
-            ? "bg-white text-[#005BFF]"
-            : "bg-[#005BFF] text-white"
-        }`}
-      >
-        Request Demo
-      </a>
-
-      <div className="space-y-4">
+      <div className="space-y-5 mb-10">
         {features.map((feature) => (
-          <div key={feature} className="flex gap-3">
-            <span>✓</span>
-            <span className={featured ? "text-white" : "text-[#B6C2D1]"}>
+          <div
+            key={feature}
+            className="flex items-center gap-4"
+          >
+            <div className="w-3 h-3 rounded-full bg-[#005BFF]" />
+
+            <p className="text-[#B6C2D1]">
               {feature}
-            </span>
+            </p>
           </div>
         ))}
       </div>
+
+      <a
+        href="/demo"
+        className="block text-center bg-[#0B1730] hover:bg-[#12203A] transition py-4 rounded-2xl font-bold border border-[#12315F]"
+      >
+        Contact Sales →
+      </a>
+    </div>
+  );
+}
+
+function FeaturedPricingCard({
+  title,
+  subtitle,
+  features,
+}: {
+  title: string;
+  subtitle: string;
+  features: string[];
+}) {
+  return (
+    <div className="relative bg-[#071225] border-2 border-[#005BFF] rounded-[32px] p-10 shadow-[0_0_60px_rgba(0,91,255,0.18)]">
+      
+      <div className="absolute top-5 right-5 bg-[#005BFF] px-4 py-2 rounded-full text-sm font-bold">
+        Most Popular
+      </div>
+
+      <p className="text-[#005BFF] font-semibold mb-3">
+        {subtitle}
+      </p>
+
+      <h2 className="text-4xl font-bold mb-8">
+        {title}
+      </h2>
+
+      <div className="space-y-5 mb-10">
+        {features.map((feature) => (
+          <div
+            key={feature}
+            className="flex items-center gap-4"
+          >
+            <div className="w-3 h-3 rounded-full bg-[#005BFF]" />
+
+            <p className="text-[#B6C2D1]">
+              {feature}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <a
+        href="/demo"
+        className="block text-center bg-[#005BFF] hover:bg-[#0047cc] transition py-4 rounded-2xl font-bold shadow-[0_0_35px_rgba(0,91,255,0.35)]"
+      >
+        Book a Demo →
+      </a>
     </div>
   );
 }
