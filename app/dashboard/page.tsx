@@ -1,130 +1,124 @@
+import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 export default function DashboardPage() {
   return (
-    <main className="min-h-screen bg-[#020817] text-[#F8FAFC]">
+    <main className="min-h-screen bg-[#020817] text-white">
       <Navbar />
 
-      <section className="px-6 py-10 border-b border-[#12315F] bg-[#030B1C]">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-[#005BFF] font-semibold mb-2">
-            Future Client Dashboard
-          </p>
+      <section className="px-6 pb-20 pt-36">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 max-w-4xl">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-blue-400">
+              AtlasBlake Command Center
+            </p>
 
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            AtlasBlake Operations Command Center
-          </h1>
+            <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
+              One operational home for dispatch, fleet, eTickets, reports, and AI.
+            </h1>
 
-          <p className="text-[#B6C2D1] text-lg leading-8 max-w-3xl mt-6">
-            This dashboard represents the future customer portal where each
-            company will access its own dispatch, eTicket, reporting, fleet,
-            customer, and AI-powered operations tools.
-          </p>
-        </div>
-      </section>
-
-      <section className="px-6 py-10">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-[260px_1fr] gap-8">
-          <aside className="bg-[#071225] border border-[#12315F] rounded-[32px] p-6 h-fit">
-            <div className="space-y-4">
-              <SidebarItem title="Overview" active />
-              <SidebarItem title="Dispatch" />
-              <SidebarItem title="eTickets" />
-              <SidebarItem title="Fleet Activity" />
-              <SidebarItem title="Customers" />
-              <SidebarItem title="Reports" />
-              <SidebarItem title="AI Assistant" />
-              <SidebarItem title="Settings" />
-            </div>
-          </aside>
-
-          <div className="space-y-8">
-            <div className="grid md:grid-cols-4 gap-6">
-              <StatCard title="Active Loads" value="148" />
-              <StatCard title="Open Tickets" value="32" />
-              <StatCard title="Completed Today" value="1,284" />
-              <StatCard title="Exceptions" value="18" />
-            </div>
-
-            <div className="grid lg:grid-cols-3 gap-6">
-              <DashboardPanel
-                title="Dispatch Activity"
-                text="Live operational movement across active jobs, trucks, and delivery workflows."
-              />
-
-              <DashboardPanel
-                title="eTicket Status"
-                text="Track completed, pending, missing, and flagged digital ticket records."
-              />
-
-              <DashboardPanel
-                title="AI Insights"
-                text="Future assistant-powered summaries, alerts, exceptions, and operational recommendations."
-              />
-            </div>
-
-            <div className="bg-[#071225] border border-[#12315F] rounded-[32px] p-8">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div>
-                  <p className="text-[#005BFF] font-semibold mb-2">
-                    Live Operations
-                  </p>
-
-                  <h2 className="text-3xl font-bold">
-                    Recent Delivery Activity
-                  </h2>
-                </div>
-
-                <span className="text-[#B6C2D1]">
-                  Company-specific data will appear here
-                </span>
-              </div>
-
-              <div className="space-y-5">
-                <DeliveryRow
-                  ticket="TX-1048"
-                  customer="Metro Concrete"
-                  status="Delivered"
-                />
-
-                <DeliveryRow
-                  ticket="TX-1052"
-                  customer="StoneBridge Materials"
-                  status="In Transit"
-                />
-
-                <DeliveryRow
-                  ticket="TX-1061"
-                  customer="Pioneer Construction"
-                  status="Loading"
-                />
-
-                <DeliveryRow
-                  ticket="TX-1068"
-                  customer="Lone Star Ready Mix"
-                  status="Pending Review"
-                />
-              </div>
-            </div>
-
-            <div className="bg-[#071225] border border-[#12315F] rounded-[32px] p-8">
-              <p className="text-[#005BFF] font-semibold mb-4">
-                AI Operations Assistant
-              </p>
-
-              <h2 className="text-3xl font-bold mb-6">
-                Ask operational questions in plain language.
-              </h2>
-
-              <div className="grid md:grid-cols-2 gap-5">
-                <Prompt text="Which tickets are missing load times?" />
-                <Prompt text="Show late deliveries from today." />
-                <Prompt text="Generate a customer delivery summary." />
-                <Prompt text="Find unusual quantity mismatches." />
-              </div>
-            </div>
+            <p className="mt-6 text-lg leading-8 text-slate-300">
+              This dashboard is the future home of the AtlasBlake customer portal.
+              BTC will become the first working company workspace, then future
+              customers can use the same core system with their own data, users,
+              trucks, tickets, and modules.
+            </p>
           </div>
+
+          <div className="grid gap-5 md:grid-cols-4">
+            <MetricCard label="Companies" value="1" subtext="BTC first workspace" />
+            <MetricCard label="Modules" value="4" subtext="Fleet, eTickets, reports, AI" />
+            <MetricCard label="Status" value="Build" subtext="Platform foundation" />
+            <MetricCard label="Mode" value="Mock" subtext="Backend connection next" />
+          </div>
+
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <ModuleCard
+              title="Fleet Command"
+              description="Live trucks, GPS tracking, driver sessions, job status, and dispatch visibility."
+              href="/dashboard/fleet"
+              status="Started"
+            />
+
+            <ModuleCard
+              title="eTicket Command"
+              description="Ticket creation, customer signatures, rejection reasons, signed PDFs, QR links, and archive workflows."
+              href="/dashboard/etickets"
+              status="Started"
+            />
+
+            <ModuleCard
+              title="Dispatch Center"
+              description="Future dispatch board for orders, loads, assignments, delivery progress, and plant activity."
+              href="/dashboard"
+              status="Coming Next"
+            />
+
+            <ModuleCard
+              title="Reports"
+              description="Daily summaries, ticket exports, fleet performance, customer history, and operational records."
+              href="/dashboard"
+              status="Planned"
+            />
+
+            <ModuleCard
+              title="AI Operations"
+              description="Exception detection, missing ticket alerts, late delivery insights, and automatic daily summaries."
+              href="/ai-automation"
+              status="Planned"
+            />
+
+            <ModuleCard
+              title="Company Admin"
+              description="Company users, drivers, devices, trucks, module access, settings, and customer workspace controls."
+              href="/dashboard"
+              status="Planned"
+            />
+          </div>
+
+          <section className="mt-10 rounded-3xl border border-[#12315F] bg-[#071225] p-8 shadow-2xl shadow-blue-950/20">
+            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+              <div>
+                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-blue-400">
+                  Platform Direction
+                </p>
+
+                <h2 className="text-3xl font-bold">
+                  BTC becomes the first real company workspace.
+                </h2>
+
+                <p className="mt-4 leading-7 text-slate-300">
+                  Your existing BTC backend, frontend, Android tablet app, GPS
+                  tracking, and eTicket workflow become the foundation. AtlasBlake
+                  turns that into a repeatable system that can serve multiple
+                  companies.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-[#0B1730] p-6">
+                <h3 className="text-xl font-bold">Future Workspace Model</h3>
+
+                <div className="mt-5 space-y-4">
+                  <WorkspaceRow
+                    company="Big Town Concrete"
+                    modules="Fleet, eTickets, GPS, Reports"
+                    status="First Workspace"
+                  />
+                  <WorkspaceRow
+                    company="Future Customer A"
+                    modules="Purchased modules only"
+                    status="Future"
+                  />
+                  <WorkspaceRow
+                    company="Future Customer B"
+                    modules="Purchased modules only"
+                    status="Future"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
 
@@ -133,78 +127,77 @@ export default function DashboardPage() {
   );
 }
 
-function SidebarItem({
-  title,
-  active = false,
+function MetricCard({
+  label,
+  value,
+  subtext,
 }: {
-  title: string;
-  active?: boolean;
+  label: string;
+  value: string;
+  subtext: string;
 }) {
   return (
-    <div
-      className={`px-5 py-4 rounded-2xl font-semibold transition ${
-        active
-          ? "bg-[#005BFF] text-white"
-          : "bg-[#0B1730] text-[#B6C2D1]"
-      }`}
-    >
-      {title}
+    <div className="rounded-2xl border border-[#12315F] bg-[#071225] p-5">
+      <p className="text-sm text-slate-400">{label}</p>
+      <p className="mt-3 text-3xl font-bold text-white">{value}</p>
+      <p className="mt-2 text-xs text-slate-500">{subtext}</p>
     </div>
   );
 }
 
-function StatCard({ title, value }: { title: string; value: string }) {
-  return (
-    <div className="bg-[#071225] border border-[#12315F] rounded-3xl p-6">
-      <p className="text-[#B6C2D1] mb-3">{title}</p>
-      <h3 className="text-4xl font-bold">{value}</h3>
-    </div>
-  );
-}
-
-function DashboardPanel({
+function ModuleCard({
   title,
-  text,
-}: {
-  title: string;
-  text: string;
-}) {
-  return (
-    <div className="bg-[#071225] border border-[#12315F] rounded-3xl p-8">
-      <div className="w-14 h-14 rounded-2xl bg-[#005BFF]/10 border border-[#005BFF]/30 mb-6" />
-
-      <h3 className="text-2xl font-bold mb-4">{title}</h3>
-
-      <p className="text-[#B6C2D1] leading-8">{text}</p>
-    </div>
-  );
-}
-
-function DeliveryRow({
-  ticket,
-  customer,
+  description,
+  href,
   status,
 }: {
-  ticket: string;
-  customer: string;
+  title: string;
+  description: string;
+  href: string;
   status: string;
 }) {
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#020817] border border-[#12315F] rounded-2xl px-6 py-5">
-      <div>
-        <h4 className="font-bold">{ticket}</h4>
-        <p className="text-[#B6C2D1]">{customer}</p>
+    <Link
+      href={href}
+      className="group rounded-3xl border border-[#12315F] bg-[#071225] p-6 shadow-2xl shadow-blue-950/10 transition hover:-translate-y-1 hover:border-blue-500/60 hover:bg-[#0B1730]"
+    >
+      <div className="mb-5 flex items-center justify-between gap-4">
+        <h2 className="text-2xl font-bold">{title}</h2>
+        <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
+          {status}
+        </span>
       </div>
 
-      <span className="text-[#005BFF] font-semibold">{status}</span>
-    </div>
+      <p className="leading-7 text-slate-400">{description}</p>
+
+      <p className="mt-6 text-sm font-semibold text-blue-300 group-hover:text-blue-200">
+        Open module →
+      </p>
+    </Link>
   );
 }
 
-function Prompt({ text }: { text: string }) {
+function WorkspaceRow({
+  company,
+  modules,
+  status,
+}: {
+  company: string;
+  modules: string;
+  status: string;
+}) {
   return (
-    <div className="bg-[#020817] border border-[#12315F] rounded-2xl p-5 text-[#B6C2D1]">
-      {text}
+    <div className="rounded-2xl border border-slate-800 bg-[#071225] p-4">
+      <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
+        <div>
+          <p className="font-bold text-white">{company}</p>
+          <p className="mt-1 text-sm text-slate-400">{modules}</p>
+        </div>
+
+        <span className="w-fit rounded-full border border-blue-500/40 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
+          {status}
+        </span>
+      </div>
     </div>
   );
 }

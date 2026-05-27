@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BTC Live Trucks</title>
+    <meta charset="UTF-8" />
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet/dist/leaflet.css"
+    />
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h2 {
+            margin-bottom: 16px;
+        }
+
+        #map {
+            height: 600px;
+            width: 100%;
+            margin-bottom: 24px;
+            border: 1px solid #ccc;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .blue {
+            background-color: blue;
+        }
+
+        .orange {
+            background-color: orange;
+        }
+
+        .gray {
+            background-color: gray;
+        }
+
+        .black {
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>BTC Live Truck Map</h2>
+
+    <div id="map"></div>
+
+    <h2>Live Truck List</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Truck</th>
+                <th>Status</th>
+                <th>Job</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Last Updated</th>
+            </tr>
+        </thead>
+        <tbody id="truck-table-body"></tbody>
+    </table>
+
+    <script>
+        let map = L.map('map').setView([32.7767, -96.7970], 10);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        let markers = {};
+        let hasAutoFit = false;
+
+        function getColor(status) {
+            switch (status) {
+                case "At Plant":
+                    return "green";
+                case "En Route":
+                    return "blue";
+                case "Pouring":
+                    return "orange";
+                case "Returning":
+                    return "gray";
+                default:
+                    return "black";
+            }
+        }
+
+        async function fetchTrucks() {
+            const response = await fetch("http://192.168.42.199:8000/trucks/live");
+            const trucks = await response.json();
+
+            const tableBody = document.getElementById("truck-table-body");
+            tableBody.innerHTML = "";
+
+            let bounds = [];
+
+            trucks.forEach(truck => {
+                const lat = truck.latitude;
+                const lon = truck.longitude;
+                const color = getColor(truck.status);
+
+                bounds.push([lat, lon]);
+
+                if (markers[truck.truck_number]) {
+                    markers[truck.truck_number].setLatLng([lat, lon]);
+                    markers[truck.truck_number].setStyle({
+                        color: color,
+                        fillColor: color
+                    });
+                    markers[truck.truck_number].bindPopup(`
+                        <b>Truck:</b> ${truck.truck_number}<br>
+                        <b>Status:</b> ${truck.status}<br>
+                        <b>Job:</b> ${truck.job_number}<br>
+                        <b>Last Updated:</b> ${truck.last_updated}
+                    `);
+                } else {
+                    const marker = L.circleMarker([lat, lon], {
+                        radius: 10,
+                        color: color,
+                        fillColor: color,
+                        fillOpacity: 0.8
+                    }).addTo(map);
+
+                    marker.bindPopup(`
+                        <b>Truck:</b> ${truck.truck_number}<br>
+                        <b>Status:</b> ${truck.status}<br>
+                        <b>Job:</b> ${truck.job_number}<br>
+                        <b>Last Updated:</b> ${truck.last_updated}
+                    `);
+
+                    markers[truck.truck_number] = marker;
+                }
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${truck.truck_number}</td>
+                    <td>
+                        <span class="status-pill ${color}">
+                            ${truck.status}
+                        </span>
+                    </td>
+                    <td>${truck.job_number}</td>
+                    <td>${truck.latitude}</td>
+                    <td>${truck.longitude}</td>
+                    <td>${truck.last_updated}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            if (bounds.length > 0 && !hasAutoFit) {
+                map.fitBounds(bounds, { padding: [40, 40] });
+                hasAutoFit = true;
+            }
+        }
+
+        fetchTrucks();
+        setInterval(fetchTrucks, 3000);
+    </script>
+
+</body>
+</html>
