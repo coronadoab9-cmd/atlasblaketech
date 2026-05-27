@@ -28,7 +28,7 @@ export default function DashboardPage() {
 
           <div className="grid gap-5 md:grid-cols-4">
             <MetricCard label="Companies" value="1" subtext="BTC first workspace" />
-            <MetricCard label="Modules" value="4" subtext="Fleet, eTickets, reports, AI" />
+            <MetricCard label="Modules" value="6" subtext="Dispatch, fleet, eTickets, reports, AI, admin" />
             <MetricCard label="Status" value="Build" subtext="Platform foundation" />
             <MetricCard label="Mode" value="Mock" subtext="Backend connection next" />
           </div>
@@ -58,8 +58,8 @@ export default function DashboardPage() {
             <ModuleCard
               title="Reports"
               description="Daily summaries, ticket exports, fleet performance, customer history, and operational records."
-              href="/dashboard"
-              status="Planned"
+              href="/dashboard/reports"
+              status="Started"
             />
 
             <ModuleCard
@@ -72,8 +72,8 @@ export default function DashboardPage() {
             <ModuleCard
               title="Company Admin"
               description="Company users, drivers, devices, trucks, module access, settings, and customer workspace controls."
-              href="/dashboard"
-              status="Planned"
+              href="/dashboard/admin"
+              status="Started"
             />
           </div>
 
