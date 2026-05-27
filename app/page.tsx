@@ -250,6 +250,60 @@ export default function Home() {
       </FadeIn>
 
       <FadeIn>
+        <section className="px-6 py-32 border-t border-[#12315F] bg-[#030B1C]">
+          <div className="max-w-7xl mx-auto">
+            <div className="max-w-3xl mb-20">
+              <p className="text-[#005BFF] font-semibold mb-4">
+                Platform Modules
+              </p>
+
+              <h2 className="text-5xl font-bold leading-tight mb-6">
+                Connected tools built for operational workflows.
+              </h2>
+
+              <p className="text-[#B6C2D1] text-xl leading-9">
+                AtlasBlake Technologies combines multiple operational systems
+                into one connected platform for dispatch, delivery, reporting,
+                and digital workflows.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-8">
+              <ModuleCard
+                title="Dispatch Center"
+                text="Track jobs, drivers, trucks, active loads, and scheduling activity in real time."
+              />
+
+              <ModuleCard
+                title="eTicket System"
+                text="Generate and manage digital delivery tickets with load details and operational data."
+              />
+
+              <ModuleCard
+                title="Fleet Operations"
+                text="Monitor fleet movement, load status, delivery progress, and operational visibility."
+              />
+
+              <ModuleCard
+                title="Customer Management"
+                text="Store customer records, jobsite data, order history, and delivery information."
+              />
+
+              <ModuleCard
+                title="Reporting Dashboard"
+                text="View operational metrics, completed loads, ticket history, and delivery performance."
+              />
+
+              <ModuleCard
+                title="Workflow Automation"
+                text="Reduce manual processes with connected operational workflows and automation."
+              />
+            </div>
+          </div>
+        </section>
+      </FadeIn>
+
+      <FadeIn>
         <section className="px-6 py-24 border-t border-[#12315F] bg-[#030B1C]">
           <div className="max-w-7xl mx-auto">
             <div className="grid md:grid-cols-4 gap-8">
@@ -430,6 +484,20 @@ function MetricCard({ value, label }: { value: string; label: string }) {
     <div className="bg-[#071225] border border-[#12315F] rounded-3xl p-10 text-center">
       <h3 className="text-5xl font-bold text-[#005BFF] mb-4">{value}</h3>
       <p className="text-[#B6C2D1] text-lg">{label}</p>
+    </div>
+  );
+}
+
+function ModuleCard({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="group bg-[#071225] border border-[#12315F] rounded-3xl p-8 hover:border-[#005BFF] transition duration-300">
+      <div className="w-16 h-16 rounded-2xl bg-[#005BFF]/10 border border-[#005BFF]/20 mb-8 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-lg bg-[#005BFF]" />
+      </div>
+
+      <h3 className="text-2xl font-bold mb-5">{title}</h3>
+
+      <p className="text-[#B6C2D1] leading-8">{text}</p>
     </div>
   );
 }
