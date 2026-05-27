@@ -65,8 +65,8 @@ export default function DashboardPage() {
             <ModuleCard
               title="AI Operations"
               description="Exception detection, missing ticket alerts, late delivery insights, and automatic daily summaries."
-              href="/ai-automation"
-              status="Planned"
+              href="/dashboard/ai"
+              status="Started"
             />
 
             <ModuleCard
