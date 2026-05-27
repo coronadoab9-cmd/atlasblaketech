@@ -13,55 +13,88 @@ export default function ContactPage() {
           </p>
 
           <h1 className="text-5xl md:text-7xl font-bold leading-tight max-w-5xl mb-8">
-            Let’s talk about your operations.
+            Let’s talk about your operational workflows.
           </h1>
 
           <p className="text-[#B6C2D1] text-xl leading-9 max-w-3xl">
-            Tell us about your dispatch, delivery, fleet, or eTicket workflows
-            and we’ll show you how AtlasBlake Technologies can help modernize
-            your operations.
+            Whether you’re looking to modernize dispatch, digital tickets,
+            delivery tracking, or reporting systems, AtlasBlake Technologies is
+            building software designed for operational visibility.
           </p>
         </div>
       </section>
 
       <section className="px-6 py-24">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16">
-          
+
           {/* LEFT SIDE */}
           <div>
-            <h2 className="text-4xl font-bold mb-8">
-              Get in touch
+            <p className="text-[#005BFF] font-semibold mb-4">
+              Contact Information
+            </p>
+
+            <h2 className="text-5xl font-bold leading-tight mb-10">
+              Start the conversation.
             </h2>
 
-            <div className="space-y-8">
-              <InfoCard
-                title="Email"
+            <div className="space-y-6">
+              <ContactCard
+                title="General Contact"
                 value="contact@atlasblaketech.com"
               />
 
-              <InfoCard
-                title="Website"
-                value="atlasblaketech.com"
+              <ContactCard
+                title="Support"
+                value="support@atlasblaketech.com"
               />
 
-              <InfoCard
-                title="Industry Focus"
-                value="Concrete, trucking, logistics & construction operations"
+              <ContactCard
+                title="Demo Requests"
+                value="demo@atlasblaketech.com"
+              />
+
+              <ContactCard
+                title="Website"
+                value="atlasblaketech.com"
               />
             </div>
           </div>
 
           {/* FORM */}
-          <div className="bg-[#071225] border border-[#12315F] rounded-[32px] p-10 shadow-[0_0_60px_rgba(0,91,255,0.08)]">
+          <div className="bg-[#071225] border border-[#12315F] rounded-[32px] p-10 shadow-[0_0_60px_rgba(0,91,255,0.10)]">
+            <p className="text-[#005BFF] font-semibold mb-4">
+              Inquiry Form
+            </p>
+
+            <h2 className="text-4xl font-bold mb-8">
+              Send us a message
+            </h2>
+
             <form className="space-y-6">
-              
-              <Input label="Full Name" type="text" />
-              
-              <Input label="Company" type="text" />
 
-              <Input label="Email Address" type="email" />
+              <Input
+                label="Full Name"
+                type="text"
+                placeholder="John Smith"
+              />
 
-              <Input label="Phone Number" type="text" />
+              <Input
+                label="Company Name"
+                type="text"
+                placeholder="ABC Ready Mix"
+              />
+
+              <Input
+                label="Work Email"
+                type="email"
+                placeholder="john@company.com"
+              />
+
+              <Input
+                label="Phone Number"
+                type="text"
+                placeholder="(555) 555-5555"
+              />
 
               <div>
                 <label className="block text-sm text-[#B6C2D1] mb-3">
@@ -70,8 +103,8 @@ export default function ContactPage() {
 
                 <textarea
                   rows={6}
+                  placeholder="Tell us about your operation and what you're looking to improve..."
                   className="w-full bg-[#020817] border border-[#12315F] rounded-2xl px-5 py-4 outline-none focus:border-[#005BFF] transition resize-none"
-                  placeholder="Tell us about your operations..."
                 />
               </div>
 
@@ -81,8 +114,10 @@ export default function ContactPage() {
               >
                 Submit Inquiry →
               </button>
+
             </form>
           </div>
+
         </div>
       </section>
 
@@ -91,7 +126,7 @@ export default function ContactPage() {
   );
 }
 
-function InfoCard({
+function ContactCard({
   title,
   value,
 }: {
@@ -104,7 +139,7 @@ function InfoCard({
         {title}
       </p>
 
-      <p className="text-[#F8FAFC] text-xl leading-8">
+      <p className="text-[#F8FAFC] text-lg">
         {value}
       </p>
     </div>
@@ -114,9 +149,11 @@ function InfoCard({
 function Input({
   label,
   type,
+  placeholder,
 }: {
   label: string;
   type: string;
+  placeholder: string;
 }) {
   return (
     <div>
@@ -126,6 +163,7 @@ function Input({
 
       <input
         type={type}
+        placeholder={placeholder}
         className="w-full bg-[#020817] border border-[#12315F] rounded-2xl px-5 py-4 outline-none focus:border-[#005BFF] transition"
       />
     </div>
