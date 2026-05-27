@@ -47,7 +47,7 @@ export default function Footer() {
             <div className="flex flex-col gap-4 text-[#B6C2D1]">
               <FooterLink href="/about" label="About" />
               <FooterLink href="/contact" label="Contact" />
-              <FooterLink href="/" label="Support" />
+              <FooterLink href="/support" label="Support" />
               <FooterLink href="/privacy" label="Privacy Policy" />
               <FooterLink href="/terms" label="Terms" />
             </div>
