@@ -1,37 +1,99 @@
 export default function Footer() {
   return (
-    <footer className="border-t border-gray-800 bg-[#05070d] text-white">
-      <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-4 gap-8">
-        <div className="md:col-span-2">
-          <h3 className="text-xl font-bold mb-3">AtlasBlake Technologies</h3>
-          <p className="text-gray-400 max-w-md">
-            Building modern dispatch, delivery, eTicket, and operations software for companies that need cleaner workflows and real-time visibility.
+    <footer className="border-t border-[#12315F] bg-[#020817]">
+      <div className="max-w-7xl mx-auto px-6 py-20">
+        <div className="grid lg:grid-cols-4 gap-14">
+          {/* BRAND */}
+          <div className="lg:col-span-2">
+            <img
+              src="/logo.png"
+              alt="AtlasBlake Technologies"
+              className="h-20 w-auto mb-6"
+            />
+
+            <p className="text-[#B6C2D1] text-lg leading-8 max-w-xl">
+              AtlasBlake Technologies builds modern dispatch,
+              delivery, eTicket, and operations software for
+              concrete, trucking, and construction companies.
+            </p>
+
+            <div className="flex gap-4 mt-8">
+              <SocialButton label="LinkedIn" />
+              <SocialButton label="GitHub" />
+              <SocialButton label="Email" />
+            </div>
+          </div>
+
+          {/* PLATFORM */}
+          <div>
+            <h3 className="text-xl font-bold mb-6">
+              Platform
+            </h3>
+
+            <div className="flex flex-col gap-4 text-[#B6C2D1]">
+              <FooterLink href="/product" label="Product" />
+              <FooterLink href="/features" label="Features" />
+              <FooterLink href="/pricing" label="Pricing" />
+              <FooterLink href="/demo" label="Book Demo" />
+            </div>
+          </div>
+
+          {/* COMPANY */}
+          <div>
+            <h3 className="text-xl font-bold mb-6">
+              Company
+            </h3>
+
+            <div className="flex flex-col gap-4 text-[#B6C2D1]">
+              <FooterLink href="/about" label="About" />
+              <FooterLink href="/contact" label="Contact" />
+              <FooterLink href="/" label="Support" />
+              <FooterLink href="/" label="Privacy Policy" />
+            </div>
+          </div>
+        </div>
+
+        {/* BOTTOM */}
+        <div className="border-t border-[#12315F] mt-16 pt-8 flex flex-col md:flex-row justify-between gap-4 text-[#B6C2D1]">
+          <p>
+            © {new Date().getFullYear()} AtlasBlake Technologies.
+            All rights reserved.
+          </p>
+
+          <p>
+            Built for modern operations.
           </p>
         </div>
-
-        <div>
-          <h4 className="font-semibold mb-3">Platform</h4>
-          <div className="flex flex-col gap-2 text-gray-400">
-            <a href="/product" className="hover:text-white">Product</a>
-            <a href="/features" className="hover:text-white">Features</a>
-            <a href="/pricing" className="hover:text-white">Pricing</a>
-            <a href="/demo" className="hover:text-white">Book Demo</a>
-          </div>
-        </div>
-
-        <div>
-          <h4 className="font-semibold mb-3">Company</h4>
-          <div className="flex flex-col gap-2 text-gray-400">
-            <a href="/about" className="hover:text-white">About</a>
-            <a href="/contact" className="hover:text-white">Contact</a>
-            <a href="/support" className="hover:text-white">Support</a>
-          </div>
-        </div>
-      </div>
-
-      <div className="border-t border-gray-800 px-6 py-6 text-center text-gray-500 text-sm">
-        © {new Date().getFullYear()} AtlasBlake Technologies, LLC. All rights reserved.
       </div>
     </footer>
+  );
+}
+
+function FooterLink({
+  href,
+  label,
+}: {
+  href: string;
+  label: string;
+}) {
+  return (
+    <a
+      href={href}
+      className="hover:text-[#005BFF] transition"
+    >
+      {label}
+    </a>
+  );
+}
+
+function SocialButton({
+  label,
+}: {
+  label: string;
+}) {
+  return (
+    <button className="px-5 py-3 rounded-xl border border-[#12315F] bg-[#071225] hover:border-[#005BFF] hover:text-[#005BFF] transition">
+      {label}
+    </button>
   );
 }
