@@ -20,7 +20,6 @@ export default function Navbar() {
   return (
     <nav className="w-full border-b border-[#12315F] bg-[#020817]/95 backdrop-blur-xl sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 h-28 flex items-center justify-between">
-        {/* LOGO */}
         <a href="/" className="flex items-center">
           <img
             src="/logo.png"
@@ -29,8 +28,7 @@ export default function Navbar() {
           />
         </a>
 
-        {/* DESKTOP NAV */}
-        <div className="hidden md:flex items-center gap-10 text-[#F8FAFC] font-medium">
+        <div className="hidden md:flex items-center gap-8 text-[#F8FAFC] font-medium">
           {links.map((link) => {
             const active = pathname === link.href;
 
@@ -50,7 +48,6 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* DESKTOP BUTTON */}
         <a
           href="/demo"
           className="hidden md:flex bg-[#005BFF] hover:bg-[#0047cc] px-7 py-4 rounded-xl font-bold transition shadow-[0_0_30px_rgba(0,91,255,0.45)]"
@@ -58,7 +55,6 @@ export default function Navbar() {
           Book Demo →
         </a>
 
-        {/* MOBILE MENU BUTTON */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="md:hidden flex flex-col gap-1"
@@ -69,7 +65,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* MOBILE MENU */}
       {menuOpen && (
         <div className="md:hidden border-t border-[#12315F] bg-[#071225]">
           <div className="flex flex-col px-6 py-6 gap-6">
@@ -94,7 +89,7 @@ export default function Navbar() {
 
             <a
               href="/demo"
-              className="bg-[#005BFF] hover:bg-[#0047cc] transition px-6 py-4 rounded-xl font-bold text-center shadow-[0_0_30px_rgba(0,91,255,0.35)]"
+              className="bg-[#005BFF] hover:bg-[#0047cc] transition px-6 py-4 rounded-xl font-bold text-center"
             >
               Book Demo →
             </a>

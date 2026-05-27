@@ -10,10 +10,10 @@ export const metadata: Metadata = {
   title: "AtlasBlake Technologies | Dispatch & eTicket Operations Software",
   description:
     "AtlasBlake Technologies builds modern dispatch, delivery, eTicket, and operations software for concrete, trucking, and construction companies.",
-    icons: {
+  icons: {
     icon: "/icon.png",
     apple: "/apple-icon.png",
-},
+  },
 };
 
 export default function RootLayout({
@@ -23,9 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
