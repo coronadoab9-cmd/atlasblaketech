@@ -50,9 +50,9 @@ export default function DashboardPage() {
 
             <ModuleCard
               title="Dispatch Center"
-              description="Future dispatch board for orders, loads, assignments, delivery progress, and plant activity."
-              href="/dashboard"
-              status="Coming Next"
+              description="Orders, loads, assignments, delivery progress, plant activity, and dispatch visibility."
+              href="/dashboard/dispatch"
+              status="Started"
             />
 
             <ModuleCard
