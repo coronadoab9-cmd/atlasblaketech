@@ -17,13 +17,13 @@ export default function Navbar() {
 
   return (
     <nav className="w-full border-b border-[#12315F] bg-[#020817]/95 backdrop-blur-xl sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 h-28 flex items-center justify-between">
         {/* LOGO */}
         <a href="/" className="flex items-center">
           <img
             src="/logo.png"
             alt="AtlasBlake Technologies"
-            className="h-16 w-auto object-contain"
+            className="h-20 w-auto object-contain"
           />
         </a>
 
