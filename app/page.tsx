@@ -248,33 +248,57 @@ export default function Home() {
           </div>
         </section>
       </FadeIn>
+
       <FadeIn>
-      <section className="px-6 py-24 border-t border-[#12315F] bg-[#030B1C]">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <MetricCard
-              value="24/7"
-              label="Operational Visibility"
-            />
-
-            <MetricCard
-              value="Real-Time"
-              label="Dispatch & Delivery Data"
-            />
-
-            <MetricCard
-              value="Digital"
-              label="eTicket Workflows"
-            />
-
-            <MetricCard
-              value="Centralized"
-              label="Operations Platform"
-            />
+        <section className="px-6 py-24 border-t border-[#12315F] bg-[#030B1C]">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid md:grid-cols-4 gap-8">
+              <MetricCard value="24/7" label="Operational Visibility" />
+              <MetricCard value="Real-Time" label="Dispatch & Delivery Data" />
+              <MetricCard value="Digital" label="eTicket Workflows" />
+              <MetricCard value="Centralized" label="Operations Platform" />
+            </div>
           </div>
-        </div>
-      </section>
-    </FadeIn>
+        </section>
+      </FadeIn>
+
+      <FadeIn>
+        <section className="px-6 py-32 border-t border-[#12315F] bg-[#020817]">
+          <div className="max-w-6xl mx-auto relative overflow-hidden rounded-[40px] border border-[#12315F] bg-[#071225] px-10 py-24 text-center shadow-[0_0_80px_rgba(0,91,255,0.12)]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,91,255,0.18),transparent_60%)]" />
+
+            <div className="relative">
+              <p className="text-[#005BFF] font-semibold mb-6">Get Started</p>
+
+              <h2 className="text-5xl md:text-6xl font-bold leading-tight max-w-4xl mx-auto mb-8">
+                Ready to modernize your dispatch and delivery operations?
+              </h2>
+
+              <p className="text-[#B6C2D1] text-xl leading-9 max-w-3xl mx-auto mb-12">
+                AtlasBlake Technologies helps operations teams replace manual
+                workflows, paper tickets, and disconnected systems with one
+                connected platform.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-5 justify-center">
+                <a
+                  href="/demo"
+                  className="bg-[#005BFF] hover:bg-[#0047cc] transition px-10 py-5 rounded-2xl text-lg font-bold shadow-[0_0_35px_rgba(0,91,255,0.35)]"
+                >
+                  Book a Demo →
+                </a>
+
+                <a
+                  href="/contact"
+                  className="border border-[#12315F] hover:border-[#005BFF] transition px-10 py-5 rounded-2xl text-lg font-bold bg-[#020817]"
+                >
+                  Contact Us →
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </FadeIn>
 
       <Footer />
     </main>
@@ -312,9 +336,7 @@ function FeatureCard({ title, text }: { title: string; text: string }) {
   return (
     <div className="bg-[#071225]/80 border border-[#12315F] rounded-3xl p-8 backdrop-blur shadow-[0_0_40px_rgba(0,91,255,0.08)]">
       <div className="w-14 h-14 rounded-2xl bg-[#005BFF]/10 border border-[#005BFF]/30 mb-6" />
-
       <h3 className="text-2xl font-semibold mb-4 text-white">{title}</h3>
-
       <p className="text-[#B6C2D1] leading-8">{text}</p>
     </div>
   );
@@ -331,7 +353,6 @@ function ProductCard({ title, text }: { title: string; text: string }) {
         </div>
 
         <h3 className="text-3xl font-bold mb-5">{title}</h3>
-
         <p className="text-[#B6C2D1] text-lg leading-8">{text}</p>
       </div>
     </div>
@@ -404,22 +425,11 @@ function DeliveryRow({
   );
 }
 
-function MetricCard({
-  value,
-  label,
-}: {
-  value: string;
-  label: string;
-}) {
+function MetricCard({ value, label }: { value: string; label: string }) {
   return (
     <div className="bg-[#071225] border border-[#12315F] rounded-3xl p-10 text-center">
-      <h3 className="text-5xl font-bold text-[#005BFF] mb-4">
-        {value}
-      </h3>
-
-      <p className="text-[#B6C2D1] text-lg">
-        {label}
-      </p>
+      <h3 className="text-5xl font-bold text-[#005BFF] mb-4">{value}</h3>
+      <p className="text-[#B6C2D1] text-lg">{label}</p>
     </div>
   );
 }
