@@ -23,6 +23,7 @@ export default function Footer() {
             <div className="flex flex-col gap-4 text-[#B6C2D1]">
               <FooterLink href="/product" label="Product" />
               <FooterLink href="/features" label="Features" />
+              <FooterLink href="/ai-automation" label="AI & Automation" />
               <FooterLink href="/industries" label="Industries" />
               <FooterLink href="/pricing" label="Pricing" />
               <FooterLink href="/demo" label="Book Demo" />
