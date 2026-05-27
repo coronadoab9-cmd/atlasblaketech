@@ -248,6 +248,33 @@ export default function Home() {
           </div>
         </section>
       </FadeIn>
+      <FadeIn>
+      <section className="px-6 py-24 border-t border-[#12315F] bg-[#030B1C]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8">
+            <MetricCard
+              value="24/7"
+              label="Operational Visibility"
+            />
+
+            <MetricCard
+              value="Real-Time"
+              label="Dispatch & Delivery Data"
+            />
+
+            <MetricCard
+              value="Digital"
+              label="eTicket Workflows"
+            />
+
+            <MetricCard
+              value="Centralized"
+              label="Operations Platform"
+            />
+          </div>
+        </div>
+      </section>
+    </FadeIn>
 
       <Footer />
     </main>
@@ -373,6 +400,26 @@ function DeliveryRow({
       </div>
 
       <div className="text-[#005BFF] font-semibold">{status}</div>
+    </div>
+  );
+}
+
+function MetricCard({
+  value,
+  label,
+}: {
+  value: string;
+  label: string;
+}) {
+  return (
+    <div className="bg-[#071225] border border-[#12315F] rounded-3xl p-10 text-center">
+      <h3 className="text-5xl font-bold text-[#005BFF] mb-4">
+        {value}
+      </h3>
+
+      <p className="text-[#B6C2D1] text-lg">
+        {label}
+      </p>
     </div>
   );
 }
