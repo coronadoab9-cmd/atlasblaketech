@@ -1,7 +1,5 @@
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
 import { buildEticketPdfUrl } from "../../lib/api";
-import { mockETickets } from "../../data/mock-platform";
+import { getETicketByToken } from "../../lib/platform-api";
 import type { ETicket } from "../../types/eticket";
 
 type PageProps = {
@@ -13,190 +11,209 @@ type PageProps = {
 export default async function PublicETicketPage({ params }: PageProps) {
   const { token } = await params;
 
-  const ticket =
-    mockETickets.find((item) => item.token === token) || createFallbackTicket(token);
+  const ticket = await getETicketByToken(token);
+
+  if (!ticket) {
+    return (
+      <main className="min-h-screen bg-[#020817] px-6 py-20 text-white">
+        <div className="mx-auto max-w-3xl rounded-3xl border border-red-500/30 bg-red-500/10 p-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-300">
+            Ticket Not Found
+          </p>
+
+          <h1 className="mt-4 text-4xl font-bold">Invalid eTicket link</h1>
+
+          <p className="mt-4 leading-7 text-slate-300">
+            This ticket token could not be found. Please contact the dispatcher
+            or office that sent you this link.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  const pdfUrl = buildEticketPdfUrl(ticket.token);
 
   return (
-    <main className="min-h-screen bg-[#020817] text-white">
-      <Navbar />
-
-      <section className="px-6 pb-20 pt-36">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-10">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-blue-400">
-              AtlasBlake Digital eTicket
-            </p>
-
-            <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
-              Customer delivery confirmation.
-            </h1>
-
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-              This public eTicket route is now reading from the shared AtlasBlake
-              platform data layer. Later, this same page will pull real ticket
-              records from the backend.
-            </p>
-          </div>
-
-          <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-            <section className="rounded-3xl border border-[#12315F] bg-[#071225] p-6 shadow-2xl shadow-blue-950/20">
-              <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center">
-                <div>
-                  <h2 className="text-2xl font-bold">
-                    Ticket #{ticket.ticket_number}
-                  </h2>
-                  <p className="mt-2 text-sm text-slate-400">
-                    Token: {ticket.token}
-                  </p>
-                </div>
-
-                <StatusBadge status={ticket.status} />
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <InfoCard label="Customer" value={ticket.customer_name} />
-                <InfoCard label="Job Number" value={ticket.job_number || "-"} />
-                <InfoCard label="Truck" value={ticket.truck_number} />
-                <InfoCard label="Driver" value={ticket.driver_name || "-"} />
-                <InfoCard label="Mix Number" value={ticket.mix_number || "-"} />
-                <InfoCard
-                  label="Mix Description"
-                  value={ticket.mix_description || "-"}
-                />
-                <InfoCard
-                  label="Quantity"
-                  value={`${ticket.quantity || 0} yd³`}
-                />
-                <InfoCard label="Load Time" value={ticket.load_time || "-"} />
-              </div>
-
-              <div className="mt-6 rounded-2xl border border-blue-500/30 bg-blue-500/10 p-5">
-                <h3 className="font-bold text-white">Water Added</h3>
-
-                <p className="mt-2 text-sm leading-6 text-slate-300">
-                  Future workflow: the customer and driver will be able to review
-                  water added, QC water, and customer water added before signing.
-                </p>
-
-                <p className="mt-3 text-sm text-blue-300">
-                  Water allowed: {ticket.water_allowed ?? 0} gallons per yard
-                </p>
-              </div>
-
-              {ticket.rejection_reason && (
-                <div className="mt-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-5">
-                  <h3 className="font-bold text-red-200">Rejection Reason</h3>
-                  <p className="mt-2 text-sm text-red-100">
-                    {ticket.rejection_reason}
-                  </p>
-                </div>
-              )}
-            </section>
-
-            <section className="rounded-3xl border border-[#12315F] bg-[#071225] p-6 shadow-2xl shadow-blue-950/20">
-              <h2 className="text-2xl font-bold">Signature Workflow</h2>
-
-              <p className="mt-3 text-sm leading-6 text-slate-400">
-                This placeholder will become the full customer signing screen
-                from your BTC system, rebranded and upgraded for AtlasBlake.
+    <main className="min-h-screen bg-[#020817] px-6 py-10 text-white">
+      <div className="mx-auto max-w-5xl">
+        <section className="rounded-3xl border border-[#12315F] bg-[#071225] p-6 shadow-2xl shadow-blue-950/20 md:p-8">
+          <div className="flex flex-col justify-between gap-5 border-b border-slate-800 pb-6 md:flex-row md:items-start">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-blue-400">
+                AtlasBlake eTicket
               </p>
 
-              <div className="mt-6 rounded-2xl border border-dashed border-slate-600 bg-[#0B1730] p-8 text-center">
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
-                  Signature Box
-                </p>
-                <p className="mt-4 text-slate-300">
-                  Customer signature canvas will go here.
-                </p>
-              </div>
+              <h1 className="mt-4 text-4xl font-bold">
+                Ticket #{ticket.ticket_number}
+              </h1>
 
-              <div className="mt-5 rounded-2xl border border-dashed border-slate-600 bg-[#0B1730] p-8 text-center">
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
-                  Photo Capture
-                </p>
-                <p className="mt-4 text-slate-300">
-                  Delivery photo/camera capture will go here.
-                </p>
-              </div>
+              <p className="mt-3 text-slate-400">
+                Customer-facing delivery ticket powered by AtlasBlake Technologies.
+              </p>
+            </div>
 
-              <div className="mt-6 grid gap-3">
-                <button className="rounded-full bg-blue-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-blue-950/40 transition hover:bg-blue-500">
-                  Accept Delivery
-                </button>
-
-                <button className="rounded-full border border-red-500/40 bg-red-500/10 px-6 py-4 text-sm font-bold text-red-300 transition hover:bg-red-500/20">
-                  Reject Delivery
-                </button>
-              </div>
-
-              <a
-                href={buildEticketPdfUrl(ticket.token)}
-                className="mt-5 block text-center text-sm font-semibold text-blue-300 hover:text-blue-200"
-              >
-                View future signed PDF link
-              </a>
-            </section>
+            <StatusBadge status={ticket.status} />
           </div>
 
-          <section className="mt-10 rounded-3xl border border-blue-500/30 bg-blue-500/10 p-8">
-            <h2 className="text-2xl font-bold">Why this page matters</h2>
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            <InfoPanel title="Customer">
+              <InfoRow label="Customer" value={ticket.customer_name} />
+              <InfoRow label="Email" value={ticket.customer_email || "-"} />
+              <InfoRow label="Job Number" value={ticket.job_number || "-"} />
+              <InfoRow label="Order Number" value={ticket.order_number || "-"} />
+              <InfoRow label="Address" value={ticket.address || "-"} />
+            </InfoPanel>
 
-            <p className="mt-4 max-w-4xl text-slate-300">
-              The dashboard and public eTicket page now share the same ticket
-              source. This is the same pattern we will use when we replace mock
-              data with real backend API data.
+            <InfoPanel title="Delivery">
+              <InfoRow label="Truck" value={ticket.truck_number} />
+              <InfoRow label="Driver" value={ticket.driver_name || "-"} />
+              <InfoRow label="Plant" value={ticket.plant || "-"} />
+              <InfoRow label="Load Time" value={ticket.load_time || "-"} />
+              <InfoRow label="Signed At" value={ticket.signed_at || "-"} />
+            </InfoPanel>
+
+            <InfoPanel title="Material">
+              <InfoRow label="Product" value={ticket.product || "-"} />
+              <InfoRow label="Mix Number" value={ticket.mix_number || "-"} />
+              <InfoRow
+                label="Mix Description"
+                value={ticket.mix_description || "-"}
+              />
+              <InfoRow
+                label="Quantity"
+                value={
+                  typeof ticket.quantity === "number"
+                    ? `${ticket.quantity}`
+                    : "-"
+                }
+              />
+              <InfoRow
+                label="Order Total"
+                value={
+                  typeof ticket.order_total === "number"
+                    ? `${ticket.order_total}`
+                    : "-"
+                }
+              />
+            </InfoPanel>
+
+            <InfoPanel title="Acceptance">
+              <InfoRow
+                label="Ticket Acceptance"
+                value={ticket.ticket_acceptance || "-"}
+              />
+              <InfoRow
+                label="Rejection Reason"
+                value={ticket.rejection_reason || "-"}
+              />
+              <InfoRow
+                label="Water Allowed"
+                value={
+                  typeof ticket.water_allowed === "number"
+                    ? `${ticket.water_allowed}`
+                    : "-"
+                }
+              />
+              <InfoRow
+                label="QC Water Added"
+                value={
+                  typeof ticket.qc_water_added === "number"
+                    ? `${ticket.qc_water_added}`
+                    : "-"
+                }
+              />
+              <InfoRow
+                label="Customer Water Added"
+                value={
+                  typeof ticket.customer_water_added === "number"
+                    ? `${ticket.customer_water_added}`
+                    : "-"
+                }
+              />
+            </InfoPanel>
+          </div>
+
+          <section className="mt-8 rounded-3xl border border-blue-500/30 bg-blue-500/10 p-6">
+            <h2 className="text-2xl font-bold">Customer Action Area</h2>
+
+            <p className="mt-3 leading-7 text-slate-300">
+              This public page now reads through the AtlasBlake platform API
+              layer. For now, it still uses mock tickets behind the scenes.
+              Later, this is where customers will review delivery details, sign
+              tickets, accept or reject deliveries, add water notes, capture GPS,
+              and generate final PDFs.
             </p>
-          </section>
-        </div>
-      </section>
 
-      <Footer />
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <a
+                href={pdfUrl}
+                className="rounded-full bg-[#005BFF] px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-blue-500"
+              >
+                View PDF
+              </a>
+
+              <button className="rounded-full border border-blue-500/50 px-5 py-3 text-sm font-bold text-blue-200">
+                Signature Workflow Coming Soon
+              </button>
+            </div>
+          </section>
+
+          <section className="mt-8 rounded-3xl border border-[#12315F] bg-[#0B1730] p-6">
+            <h2 className="text-2xl font-bold">System Connection</h2>
+
+            <p className="mt-3 leading-7 text-slate-300">
+              Token used for this public ticket:
+            </p>
+
+            <code className="mt-4 block overflow-x-auto rounded-2xl border border-slate-800 bg-[#020817] p-4 text-sm text-blue-300">
+              {ticket.token}
+            </code>
+          </section>
+        </section>
+      </div>
     </main>
   );
 }
 
-function createFallbackTicket(token: string): ETicket {
-  return {
-    id: 0,
-    token,
-    ticket_number: "Unknown",
-    customer_name: "Ticket Not Found",
-    job_number: "-",
-    truck_number: "-",
-    driver_name: "-",
-    mix_number: "-",
-    mix_description: "-",
-    quantity: 0,
-    status: "pending",
-    load_time: "-",
-    water_allowed: 0,
-  };
+function InfoPanel({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="rounded-3xl border border-slate-800 bg-[#0B1730] p-6">
+      <h2 className="text-xl font-bold">{title}</h2>
+
+      <div className="mt-5 space-y-3">{children}</div>
+    </section>
+  );
 }
 
-function InfoCard({ label, value }: { label: string; value: string }) {
+function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-[#0B1730] p-4">
-      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-        {label}
-      </p>
-      <p className="mt-2 font-bold text-white">{value}</p>
+    <div className="flex flex-col justify-between gap-1 border-b border-slate-800 pb-3 last:border-b-0 md:flex-row">
+      <span className="text-sm text-slate-400">{label}</span>
+      <span className="font-semibold text-white md:text-right">{value}</span>
     </div>
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const statusStyles: Record<string, string> = {
+function StatusBadge({ status }: { status: ETicket["status"] }) {
+  const styles: Record<string, string> = {
     pending: "border-amber-500/40 bg-amber-500/10 text-amber-300",
     signed: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
     rejected: "border-red-500/40 bg-red-500/10 text-red-300",
     archived: "border-slate-500/40 bg-slate-500/10 text-slate-300",
+    completed: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
   };
 
   return (
     <span
-      className={`rounded-full border px-4 py-2 text-sm font-semibold ${
-        statusStyles[status] ||
-        "border-blue-500/40 bg-blue-500/10 text-blue-300"
+      className={`w-fit rounded-full border px-4 py-2 text-sm font-semibold capitalize ${
+        styles[status] || "border-blue-500/40 bg-blue-500/10 text-blue-300"
       }`}
     >
       {status}
