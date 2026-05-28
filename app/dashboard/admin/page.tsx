@@ -1,119 +1,21 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import {
+  mockCompany,
+  mockCompanyUsers,
+  mockDevices,
+  mockDrivers,
+  mockModules,
+} from "../../data/mock-platform";
 import type { CompanyUser, PlatformModule } from "../../types/company";
-
-type AdminDriver = {
-  id: number;
-  name: string;
-  pin_status: string;
-  truck_number: string;
-  active: boolean;
-};
-
-type AdminDevice = {
-  id: string;
-  device_name: string;
-  device_uuid: string;
-  truck_number: string;
-  driver_name: string;
-  last_seen: string;
-  status: string;
-};
-
-const users: CompanyUser[] = [
-  {
-    id: "user-001",
-    company_id: "btc",
-    name: "Operations Admin",
-    email: "admin@company.com",
-    role: "admin",
-    active: true,
-    allowed_modules: ["dispatch", "fleet", "etickets", "reports"],
-  },
-  {
-    id: "user-002",
-    company_id: "btc",
-    name: "Dispatcher",
-    email: "dispatch@company.com",
-    role: "dispatcher",
-    active: true,
-    allowed_modules: ["dispatch", "fleet", "etickets"],
-  },
-  {
-    id: "user-003",
-    company_id: "btc",
-    name: "Manager",
-    email: "manager@company.com",
-    role: "manager",
-    active: true,
-    allowed_modules: ["fleet", "etickets", "reports"],
-  },
-];
-
-const drivers: AdminDriver[] = [
-  {
-    id: 1,
-    name: "Driver Assigned",
-    pin_status: "PIN Active",
-    truck_number: "BTS-01A",
-    active: true,
-  },
-  {
-    id: 2,
-    name: "Driver Assigned",
-    pin_status: "PIN Active",
-    truck_number: "BTS-002",
-    active: true,
-  },
-  {
-    id: 3,
-    name: "Driver Assigned",
-    pin_status: "PIN Active",
-    truck_number: "BTS-003",
-    active: true,
-  },
-];
-
-const devices: AdminDevice[] = [
-  {
-    id: "device-001",
-    device_name: "BTC Tablet 01",
-    device_uuid: "tablet-bts-01a",
-    truck_number: "BTS-01A",
-    driver_name: "Driver Assigned",
-    last_seen: "2 min ago",
-    status: "Online",
-  },
-  {
-    id: "device-002",
-    device_name: "BTC Tablet 02",
-    device_uuid: "tablet-bts-002",
-    truck_number: "BTS-002",
-    driver_name: "Driver Assigned",
-    last_seen: "4 min ago",
-    status: "Online",
-  },
-  {
-    id: "device-003",
-    device_name: "BTC Tablet 03",
-    device_uuid: "tablet-bts-003",
-    truck_number: "BTS-003",
-    driver_name: "Driver Assigned",
-    last_seen: "12 min ago",
-    status: "Check",
-  },
-];
-
-const enabledModules: PlatformModule[] = [
-  "dispatch",
-  "fleet",
-  "etickets",
-  "reports",
-  "ai_assistant",
-  "admin",
-];
+import type { Device, Driver } from "../../types/fleet";
 
 export default function AdminDashboardPage() {
+  const users = mockCompanyUsers;
+  const drivers = mockDrivers;
+  const devices = mockDevices;
+  const enabledModules = mockModules;
+
   return (
     <main className="min-h-screen bg-[#020817] text-white">
       <Navbar />
@@ -130,14 +32,18 @@ export default function AdminDashboardPage() {
             </h1>
 
             <p className="mt-6 text-lg leading-8 text-slate-300">
-              This page is the beginning of the AtlasBlake admin console. It will
-              eventually connect to the driver PINs, devices, sessions, and admin
-              workflows already created in your BTC system.
+              This page is now reading from the shared AtlasBlake platform data
+              layer. Later, this same page will connect to real company users,
+              driver PINs, Android tablets, module access, and workspace settings.
             </p>
           </div>
 
           <div className="grid gap-5 md:grid-cols-4">
-            <StatCard label="Company" value="BTC" subtext="First workspace" />
+            <StatCard
+              label="Company"
+              value={mockCompany.name}
+              subtext="First workspace"
+            />
             <StatCard label="Users" value={users.length} subtext="Mock access" />
             <StatCard label="Drivers" value={drivers.length} subtext="Tablet-ready" />
             <StatCard label="Devices" value={devices.length} subtext="GPS tablets" />
@@ -214,7 +120,7 @@ export default function AdminDashboardPage() {
 
               <div className="space-y-4">
                 {devices.map((device) => (
-                  <DeviceCard key={device.id} device={device} />
+                  <DeviceCard key={device.device_uuid} device={device} />
                 ))}
               </div>
             </section>
@@ -250,7 +156,7 @@ function StatCard({
   return (
     <div className="rounded-2xl border border-[#12315F] bg-[#071225] p-5">
       <p className="text-sm text-slate-400">{label}</p>
-      <p className="mt-3 text-3xl font-bold text-white">{value}</p>
+      <p className="mt-3 text-2xl font-bold text-white">{value}</p>
       <p className="mt-2 text-xs text-slate-500">{subtext}</p>
     </div>
   );
@@ -269,37 +175,37 @@ function UserCard({ user }: { user: CompanyUser }) {
         </div>
 
         <span className="w-fit rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
-          Active
+          {user.active ? "Active" : "Inactive"}
         </span>
       </div>
     </div>
   );
 }
 
-function DriverCard({ driver }: { driver: AdminDriver }) {
+function DriverCard({ driver }: { driver: Driver }) {
   return (
     <div className="rounded-2xl border border-slate-800 bg-[#0B1730] p-4">
       <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
         <div>
           <p className="font-bold text-white">{driver.name}</p>
           <p className="mt-1 text-sm text-slate-400">
-            Truck {driver.truck_number}
+            Truck {driver.truck_number || "-"}
           </p>
           <p className="mt-1 text-xs uppercase tracking-wider text-blue-300">
-            {driver.pin_status}
+            Signed in: {driver.signed_in_at || "-"}
           </p>
         </div>
 
         <span className="w-fit rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
-          Active
+          {driver.active ? "Active" : "Inactive"}
         </span>
       </div>
     </div>
   );
 }
 
-function DeviceCard({ device }: { device: AdminDevice }) {
-  const warning = device.status !== "Online";
+function DeviceCard({ device }: { device: Device }) {
+  const warning = device.last_seen_at?.includes("12");
 
   return (
     <div className="rounded-2xl border border-slate-800 bg-[#0B1730] p-4">
@@ -311,7 +217,7 @@ function DeviceCard({ device }: { device: AdminDevice }) {
           </p>
           <p className="mt-1 text-xs text-slate-500">{device.device_uuid}</p>
           <p className="mt-1 text-xs text-slate-500">
-            Last seen: {device.last_seen}
+            Last seen: {device.last_seen_at}
           </p>
         </div>
 
@@ -322,7 +228,7 @@ function DeviceCard({ device }: { device: AdminDevice }) {
               : "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
           }`}
         >
-          {device.status}
+          {warning ? "Check" : "Online"}
         </span>
       </div>
     </div>

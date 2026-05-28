@@ -2,6 +2,9 @@ import type { Company, CompanyUser, PlatformModule } from "../types/company";
 import type { Truck, FleetDashboardStats, Driver, Device } from "../types/fleet";
 import type { ETicket } from "../types/eticket";
 import type { DashboardAlert, RecentActivity, AIInsight } from "../types/dashboard";
+import type { DispatchLoad, DispatchStats } from "../types/dispatch";
+import type { ReportRow, ReportStats } from "../types/reports";
+
 
 export const mockCompany: Company = {
   id: "btc",
@@ -283,5 +286,108 @@ export const mockAIInsights: AIInsight[] = [
     category: "ticket_exception",
     recommended_action: "Notify the driver or dispatcher to complete the eTicket workflow.",
     created_at: "5 min ago",
+  },
+];
+export const mockDispatchStats: DispatchStats = {
+  scheduled_loads: 12,
+  dispatched: 7,
+  on_site: 3,
+  needs_attention: 1,
+};
+
+export const mockDispatchLoads: DispatchLoad[] = [
+  {
+    id: "load-1001",
+    company_id: "btc",
+    order_number: "ORD-2048",
+    customer_name: "Customer Site",
+    job_number: "JOB-1048",
+    plant: "BTS-01A",
+    truck_number: "BTS-01A",
+    driver_name: "Driver Assigned",
+    mix: "3000 PSI",
+    quantity: 10,
+    status: "En Route",
+    scheduled_time: "8:15 AM",
+    ticket_token: "sample-ticket-1001",
+    ticket_number: "1001",
+  },
+  {
+    id: "load-1002",
+    company_id: "btc",
+    order_number: "ORD-2051",
+    customer_name: "Commercial Pour",
+    job_number: "JOB-1051",
+    plant: "BTS-002",
+    truck_number: "BTS-002",
+    driver_name: "Driver Assigned",
+    mix: "3500 PSI",
+    quantity: 9,
+    status: "Loading",
+    scheduled_time: "9:05 AM",
+    ticket_token: "sample-ticket-1002",
+    ticket_number: "1002",
+  },
+  {
+    id: "load-1003",
+    company_id: "btc",
+    order_number: "ORD-2054",
+    customer_name: "Project Location",
+    job_number: "JOB-1054",
+    plant: "BTS-003",
+    truck_number: "BTS-003",
+    driver_name: "Driver Assigned",
+    mix: "4000 PSI",
+    quantity: 11,
+    status: "On Site",
+    scheduled_time: "10:20 AM",
+    ticket_token: "sample-ticket-1003",
+    ticket_number: "1003",
+  },
+];
+
+export const mockReportStats: ReportStats = {
+  reports_today: 4,
+  ready: 2,
+  processing: 1,
+  needs_review: 1,
+};
+
+export const mockReports: ReportRow[] = [
+  {
+    id: "report-001",
+    company_id: "btc",
+    report_name: "Daily Dispatch Summary",
+    module: "Dispatch",
+    period: "Today",
+    status: "Ready",
+    last_generated: "Today, 4:15 PM",
+  },
+  {
+    id: "report-002",
+    company_id: "btc",
+    report_name: "Signed eTicket Export",
+    module: "eTickets",
+    period: "Today",
+    status: "Ready",
+    last_generated: "Today, 4:10 PM",
+  },
+  {
+    id: "report-003",
+    company_id: "btc",
+    report_name: "Fleet Activity Summary",
+    module: "Fleet",
+    period: "Today",
+    status: "Processing",
+    last_generated: "Today, 3:55 PM",
+  },
+  {
+    id: "report-004",
+    company_id: "btc",
+    report_name: "Rejected Delivery Exceptions",
+    module: "eTickets",
+    period: "This Week",
+    status: "Needs Review",
+    last_generated: "Today, 2:40 PM",
   },
 ];
