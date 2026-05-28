@@ -2,24 +2,42 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {
-  mockAIInsights,
-  mockAlerts,
-  mockCompany,
-  mockETickets,
-  mockModules,
-  mockRecentActivity,
-  mockTrucks,
-} from "../data/mock-platform";
+  getAIInsights,
+  getAlerts,
+  getCompany,
+  getCompanyModules,
+  getETickets,
+  getRecentActivity,
+  getTrucks,
+} from "../lib/platform-api";
 
-export default function DashboardPage() {
-  const pendingTickets = mockETickets.filter(
+export default async function DashboardPage() {
+  const [
+    company,
+    modules,
+    trucks,
+    tickets,
+    alerts,
+    recentActivity,
+    aiInsights,
+  ] = await Promise.all([
+    getCompany(),
+    getCompanyModules(),
+    getTrucks(),
+    getETickets(),
+    getAlerts(),
+    getRecentActivity(),
+    getAIInsights(),
+  ]);
+
+  const pendingTickets = tickets.filter(
     (ticket) => ticket.status === "pending"
   ).length;
 
-  const activeTrucks = mockTrucks.length;
-  const moduleCount = mockModules.length;
-  const alertCount = mockAlerts.length;
-  const aiInsightCount = mockAIInsights.length;
+  const activeTrucks = trucks.length;
+  const moduleCount = modules.length;
+  const alertCount = alerts.length;
+  const aiInsightCount = aiInsights.length;
 
   return (
     <main className="min-h-screen bg-[#020817] text-white">
@@ -37,29 +55,32 @@ export default function DashboardPage() {
             </h1>
 
             <p className="mt-6 text-lg leading-8 text-slate-300">
-              This dashboard is now reading from the shared AtlasBlake platform
-              data layer. BTC is the first company workspace, and future
-              customers can use the same core system with separate data, users,
-              trucks, tickets, and modules.
+              This dashboard now reads through the AtlasBlake platform API layer.
+              For now, it is still using mock data behind the scenes. Later, we
+              can switch the same page to live BTC and AtlasBlake backend data
+              without rebuilding the page.
             </p>
           </div>
 
           <div className="grid gap-5 md:grid-cols-4">
             <MetricCard
               label="Company"
-              value={mockCompany.name}
+              value={company.name}
               subtext="First workspace"
             />
+
             <MetricCard
               label="Modules"
               value={moduleCount.toString()}
               subtext="Purchased platform modules"
             />
+
             <MetricCard
               label="Active Trucks"
               value={activeTrucks.toString()}
               subtext="Fleet data source"
             />
+
             <MetricCard
               label="Pending Tickets"
               value={pendingTickets.toString()}
@@ -128,7 +149,7 @@ export default function DashboardPage() {
               </div>
 
               <div className="space-y-4">
-                {mockAlerts.map((alert) => (
+                {alerts.map((alert) => (
                   <AlertCard
                     key={alert.id}
                     title={alert.title}
@@ -151,12 +172,12 @@ export default function DashboardPage() {
                 </div>
 
                 <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
-                  Shared data
+                  API layer
                 </span>
               </div>
 
               <div className="space-y-4">
-                {mockRecentActivity.map((activity) => (
+                {recentActivity.map((activity) => (
                   <ActivityCard
                     key={activity.id}
                     title={activity.title}
@@ -193,8 +214,8 @@ export default function DashboardPage() {
                     AI Signal
                   </p>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
-                    {aiInsightCount} AI insights are available from the shared
-                    data layer.
+                    {aiInsightCount} AI insights are available through the
+                    AtlasBlake API layer.
                   </p>
                 </div>
               </div>
@@ -204,15 +225,17 @@ export default function DashboardPage() {
 
                 <div className="mt-5 space-y-4">
                   <WorkspaceRow
-                    company={mockCompany.name}
-                    modules={mockModules.join(", ").replaceAll("_", " ")}
+                    company={company.name}
+                    modules={modules.join(", ").replaceAll("_", " ")}
                     status="First Workspace"
                   />
+
                   <WorkspaceRow
                     company="Future Customer A"
                     modules="Purchased modules only"
                     status="Future"
                   />
+
                   <WorkspaceRow
                     company="Future Customer B"
                     modules="Purchased modules only"
@@ -244,6 +267,7 @@ function MetricCard({
   return (
     <div className="rounded-2xl border border-[#12315F] bg-[#071225] p-5">
       <p className="text-sm text-slate-400">{label}</p>
+
       <p
         className={`mt-3 text-2xl font-bold ${
           warning ? "text-amber-300" : "text-white"
@@ -251,6 +275,7 @@ function MetricCard({
       >
         {value}
       </p>
+
       <p className="mt-2 text-xs text-slate-500">{subtext}</p>
     </div>
   );
@@ -274,6 +299,7 @@ function ModuleCard({
     >
       <div className="mb-5 flex items-center justify-between gap-4">
         <h2 className="text-2xl font-bold">{title}</h2>
+
         <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
           {status}
         </span>
@@ -308,6 +334,7 @@ function AlertCard({
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-300">
             {module}
           </p>
+
           <h3 className="mt-2 font-bold text-white">{title}</h3>
         </div>
 
@@ -317,6 +344,7 @@ function AlertCard({
       </div>
 
       <p className="mt-3 text-sm leading-6 text-slate-300">{message}</p>
+
       <p className="mt-3 text-xs text-slate-500">{createdAt}</p>
     </div>
   );
@@ -340,8 +368,11 @@ function ActivityCard({
       <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-300">
         {module}
       </p>
+
       <h3 className="mt-2 font-bold text-white">{title}</h3>
+
       <p className="mt-2 text-sm leading-6 text-slate-300">{description}</p>
+
       <p className="mt-3 text-xs text-slate-500">
         {actor} • {createdAt}
       </p>
@@ -363,6 +394,7 @@ function WorkspaceRow({
       <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
         <div>
           <p className="font-bold text-white">{company}</p>
+
           <p className="mt-1 text-sm capitalize text-slate-400">{modules}</p>
         </div>
 
