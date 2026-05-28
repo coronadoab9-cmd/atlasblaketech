@@ -1,51 +1,11 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-
-type ReportRow = {
-  id: string;
-  report_name: string;
-  module: string;
-  period: string;
-  status: string;
-  last_generated: string;
-};
-
-const reports: ReportRow[] = [
-  {
-    id: "report-001",
-    report_name: "Daily Dispatch Summary",
-    module: "Dispatch",
-    period: "Today",
-    status: "Ready",
-    last_generated: "Today, 4:15 PM",
-  },
-  {
-    id: "report-002",
-    report_name: "Signed eTicket Export",
-    module: "eTickets",
-    period: "Today",
-    status: "Ready",
-    last_generated: "Today, 4:10 PM",
-  },
-  {
-    id: "report-003",
-    report_name: "Fleet Activity Summary",
-    module: "Fleet",
-    period: "Today",
-    status: "Processing",
-    last_generated: "Today, 3:55 PM",
-  },
-  {
-    id: "report-004",
-    report_name: "Rejected Delivery Exceptions",
-    module: "eTickets",
-    period: "This Week",
-    status: "Needs Review",
-    last_generated: "Today, 2:40 PM",
-  },
-];
+import { mockReports, mockReportStats } from "../../data/mock-platform";
 
 export default function ReportsDashboardPage() {
+  const reports = mockReports;
+  const stats = mockReportStats;
+
   return (
     <main className="min-h-screen bg-[#020817] text-white">
       <Navbar />
@@ -62,17 +22,17 @@ export default function ReportsDashboardPage() {
             </h1>
 
             <p className="mt-6 text-lg leading-8 text-slate-300">
-              This page is the start of the AtlasBlake reporting module. It will
-              eventually generate daily summaries, ticket exports, fleet activity,
-              exception reports, and customer delivery records.
+              This page now reads from the shared AtlasBlake platform data layer.
+              Later, these reports will be generated from real dispatch loads,
+              fleet activity, signed eTickets, customer records, and AI summaries.
             </p>
           </div>
 
           <div className="grid gap-5 md:grid-cols-4">
-            <StatCard label="Reports Today" value="4" />
-            <StatCard label="Ready" value="2" />
-            <StatCard label="Processing" value="1" />
-            <StatCard label="Needs Review" value="1" warning />
+            <StatCard label="Reports Today" value={stats.reports_today} />
+            <StatCard label="Ready" value={stats.ready} />
+            <StatCard label="Processing" value={stats.processing} />
+            <StatCard label="Needs Review" value={stats.needs_review} warning />
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
@@ -81,13 +41,13 @@ export default function ReportsDashboardPage() {
                 <div>
                   <h2 className="text-2xl font-bold">Report Library</h2>
                   <p className="mt-2 text-sm text-slate-400">
-                    Future connection: signed tickets, GPS history, dispatch
-                    loads, customer activity, and AI-generated summaries.
+                    Shared data source: reports generated from dispatch, fleet,
+                    eTickets, exceptions, and customer activity.
                   </p>
                 </div>
 
                 <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-300">
-                  Mock Data
+                  Shared Mock Data
                 </span>
               </div>
 
@@ -151,9 +111,9 @@ export default function ReportsDashboardPage() {
 
             <p className="mt-4 max-w-4xl text-slate-300">
               Reports are where the platform becomes valuable to owners,
-              managers, dispatchers, accounting, and customers. Once connected,
-              AtlasBlake can turn daily work into records, exports, summaries,
-              and AI-driven operational insights.
+              managers, dispatchers, accounting, and customers. Now this page is
+              connected to the same shared data layer as dispatch, fleet,
+              eTickets, admin, AI, and the command center.
             </p>
           </section>
         </div>

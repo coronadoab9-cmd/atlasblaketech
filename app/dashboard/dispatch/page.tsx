@@ -1,63 +1,11 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-
-type DispatchLoad = {
-  id: string;
-  order_number: string;
-  customer_name: string;
-  job_number: string;
-  plant: string;
-  truck_number: string;
-  driver_name: string;
-  mix: string;
-  quantity: number;
-  status: string;
-  scheduled_time: string;
-};
-
-const loads: DispatchLoad[] = [
-  {
-    id: "load-1001",
-    order_number: "ORD-2048",
-    customer_name: "Customer Site",
-    job_number: "JOB-1048",
-    plant: "BTS-01A",
-    truck_number: "BTS-01A",
-    driver_name: "Driver Assigned",
-    mix: "3000 PSI",
-    quantity: 10,
-    status: "En Route",
-    scheduled_time: "8:15 AM",
-  },
-  {
-    id: "load-1002",
-    order_number: "ORD-2051",
-    customer_name: "Commercial Pour",
-    job_number: "JOB-1051",
-    plant: "BTS-002",
-    truck_number: "BTS-002",
-    driver_name: "Driver Assigned",
-    mix: "3500 PSI",
-    quantity: 9,
-    status: "Loading",
-    scheduled_time: "9:05 AM",
-  },
-  {
-    id: "load-1003",
-    order_number: "ORD-2054",
-    customer_name: "Project Location",
-    job_number: "JOB-1054",
-    plant: "BTS-003",
-    truck_number: "BTS-003",
-    driver_name: "Driver Assigned",
-    mix: "4000 PSI",
-    quantity: 11,
-    status: "On Site",
-    scheduled_time: "10:20 AM",
-  },
-];
+import { mockDispatchLoads, mockDispatchStats } from "../../data/mock-platform";
 
 export default function DispatchDashboardPage() {
+  const loads = mockDispatchLoads;
+  const stats = mockDispatchStats;
+
   return (
     <main className="min-h-screen bg-[#020817] text-white">
       <Navbar />
@@ -74,18 +22,17 @@ export default function DispatchDashboardPage() {
             </h1>
 
             <p className="mt-6 text-lg leading-8 text-slate-300">
-              This page is the start of the AtlasBlake dispatch module. It will
-              eventually connect customer orders, plant activity, truck
-              assignments, live GPS, and eTicket creation into one operational
-              command center.
+              This page now reads from the shared AtlasBlake platform data layer.
+              Later, these loads will come from the backend and connect directly
+              to live trucks, drivers, plants, and eTickets.
             </p>
           </div>
 
           <div className="grid gap-5 md:grid-cols-4">
-            <StatCard label="Scheduled Loads" value="12" />
-            <StatCard label="Dispatched" value="7" />
-            <StatCard label="On Site" value="3" />
-            <StatCard label="Needs Attention" value="1" warning />
+            <StatCard label="Scheduled Loads" value={stats.scheduled_loads} />
+            <StatCard label="Dispatched" value={stats.dispatched} />
+            <StatCard label="On Site" value={stats.on_site} />
+            <StatCard label="Needs Attention" value={stats.needs_attention} warning />
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
@@ -94,18 +41,17 @@ export default function DispatchDashboardPage() {
                 <div>
                   <h2 className="text-2xl font-bold">Today’s Dispatch Board</h2>
                   <p className="mt-2 text-sm text-slate-400">
-                    Future connection: orders → truck assignment → GPS movement →
-                    eTicket creation.
+                    Shared data source: loads → trucks → eTickets → reports.
                   </p>
                 </div>
 
                 <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-300">
-                  Mock Data
+                  Shared Mock Data
                 </span>
               </div>
 
               <div className="overflow-hidden rounded-2xl border border-slate-800">
-                <div className="grid grid-cols-8 bg-[#0B1730] px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <div className="grid grid-cols-9 bg-[#0B1730] px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
                   <span>Time</span>
                   <span>Order</span>
                   <span>Customer</span>
@@ -113,13 +59,14 @@ export default function DispatchDashboardPage() {
                   <span>Truck</span>
                   <span>Mix</span>
                   <span>Qty</span>
+                  <span>Ticket</span>
                   <span>Status</span>
                 </div>
 
                 {loads.map((load) => (
                   <div
                     key={load.id}
-                    className="grid grid-cols-8 border-t border-slate-800 px-4 py-4 text-sm"
+                    className="grid grid-cols-9 border-t border-slate-800 px-4 py-4 text-sm"
                   >
                     <span className="font-bold text-white">
                       {load.scheduled_time}
@@ -130,6 +77,9 @@ export default function DispatchDashboardPage() {
                     <span className="text-slate-300">{load.truck_number}</span>
                     <span className="text-slate-300">{load.mix}</span>
                     <span className="text-slate-300">{load.quantity}</span>
+                    <span className="text-blue-300">
+                      #{load.ticket_number || "-"}
+                    </span>
                     <span>
                       <StatusBadge status={load.status} />
                     </span>
@@ -149,11 +99,11 @@ export default function DispatchDashboardPage() {
               <div className="mt-6 space-y-4">
                 <InsightCard
                   title="Truck assignment check"
-                  text="One scheduled load has no confirmed truck assignment."
+                  text="All shared dispatch loads currently have truck assignments."
                 />
                 <InsightCard
                   title="Ticket readiness"
-                  text="Create eTickets automatically when a load is dispatched."
+                  text="Each shared load is linked to a future public eTicket token."
                 />
                 <InsightCard
                   title="Plant activity"
@@ -167,9 +117,9 @@ export default function DispatchDashboardPage() {
             <h2 className="text-2xl font-bold">Why this page matters</h2>
 
             <p className="mt-4 max-w-4xl text-slate-300">
-              Dispatch is the center of the system. Once this connects to the
-              backend, it can create eTickets, track trucks, monitor job progress,
-              and power AI alerts from one place.
+              Dispatch is the center of the system. Now this page is connected to
+              the same shared data layer as the fleet, eTicket, admin, AI, and
+              command center pages.
             </p>
           </section>
         </div>
