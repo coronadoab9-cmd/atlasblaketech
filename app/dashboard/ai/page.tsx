@@ -1,6 +1,6 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { mockAIInsights } from "../../data/mock-platform";
+import { getAIInsights } from "../../lib/platform-api";
 import type { AIInsight } from "../../types/dashboard";
 
 const prompts = [
@@ -12,8 +12,8 @@ const prompts = [
   "Show tickets where water was added.",
 ];
 
-export default function AIOperationsDashboardPage() {
-  const insights = mockAIInsights;
+export default async function AIOperationsDashboardPage() {
+  const insights = await getAIInsights();
 
   const warningCount = insights.filter(
     (insight) => insight.category === "late_delivery"
@@ -21,6 +21,10 @@ export default function AIOperationsDashboardPage() {
 
   const criticalCount = insights.filter(
     (insight) => insight.category === "ticket_exception"
+  ).length;
+
+  const reportsReady = insights.filter(
+    (insight) => insight.category === "reporting"
   ).length;
 
   return (
@@ -39,9 +43,10 @@ export default function AIOperationsDashboardPage() {
             </h1>
 
             <p className="mt-6 text-lg leading-8 text-slate-300">
-              This page now reads from the shared AtlasBlake platform data layer.
-              Later, these insights will be generated from real BTC and future
-              customer operational data.
+              This page now reads through the AtlasBlake platform API layer. For
+              now, it still uses mock data behind the scenes. Later, these
+              insights can be generated from real BTC and AtlasBlake operations
+              data.
             </p>
           </div>
 
@@ -49,15 +54,16 @@ export default function AIOperationsDashboardPage() {
             <StatCard label="Insights Today" value={insights.length} />
             <StatCard label="Warnings" value={warningCount} warning />
             <StatCard label="Critical" value={criticalCount} danger />
-            <StatCard label="Reports Ready" value="1" />
+            <StatCard label="Reports Ready" value={reportsReady} />
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
             <section className="rounded-3xl border border-[#12315F] bg-[#071225] p-6 shadow-2xl shadow-blue-950/20">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold">Operations Insights</h2>
+
                 <p className="mt-2 text-sm text-slate-400">
-                  Future connection: live GPS, eTickets, dispatch loads, driver
+                  API source path: live GPS, eTickets, dispatch loads, driver
                   activity, customer records, and reports.
                 </p>
               </div>
@@ -144,6 +150,7 @@ function StatCard({
   return (
     <div className="rounded-2xl border border-[#12315F] bg-[#071225] p-5">
       <p className="text-sm text-slate-400">{label}</p>
+
       <p
         className={`mt-3 text-3xl font-bold ${
           danger ? "text-red-300" : warning ? "text-amber-300" : "text-white"
@@ -156,6 +163,8 @@ function StatCard({
 }
 
 function InsightCard({ insight }: { insight: AIInsight }) {
+  const severity = getSeverity(insight);
+
   return (
     <div className="rounded-2xl border border-slate-800 bg-[#0B1730] p-5">
       <div className="mb-4 flex flex-col justify-between gap-3 md:flex-row md:items-center">
@@ -163,38 +172,71 @@ function InsightCard({ insight }: { insight: AIInsight }) {
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-300">
             {formatCategory(insight.category)}
           </p>
+
           <h3 className="mt-2 text-xl font-bold text-white">
             {insight.title}
           </h3>
         </div>
 
-        <ConfidenceBadge confidence={insight.confidence} />
+        <SeverityBadge severity={severity} />
       </div>
 
       <p className="leading-7 text-slate-300">{insight.summary}</p>
+
+      {typeof insight.confidence === "number" && (
+        <p className="mt-3 text-xs text-slate-500">
+          Confidence: {Math.round(insight.confidence * 100)}%
+        </p>
+      )}
 
       {insight.recommended_action && (
         <div className="mt-4 rounded-2xl border border-blue-500/30 bg-blue-500/10 p-4">
           <p className="text-xs font-semibold uppercase tracking-wider text-blue-300">
             Recommended Action
           </p>
+
           <p className="mt-2 text-sm leading-6 text-slate-300">
             {insight.recommended_action}
           </p>
         </div>
       )}
 
-      <p className="mt-4 text-xs text-slate-500">{insight.created_at}</p>
+      <p className="mt-4 text-xs text-slate-500">
+        {insight.created_at || "-"}
+      </p>
     </div>
   );
 }
 
-function ConfidenceBadge({ confidence }: { confidence?: number }) {
-  const percent = confidence ? Math.round(confidence * 100) : 0;
+function getSeverity(
+  insight: AIInsight
+): "Info" | "Warning" | "Critical" | "Success" {
+  if (insight.category === "ticket_exception") return "Critical";
+  if (insight.category === "late_delivery") return "Warning";
+  if (insight.category === "reporting") return "Success";
+  return "Info";
+}
+
+function SeverityBadge({
+  severity,
+}: {
+  severity: "Info" | "Warning" | "Critical" | "Success";
+}) {
+  const styles: Record<
+    "Info" | "Warning" | "Critical" | "Success",
+    string
+  > = {
+    Info: "border-blue-500/40 bg-blue-500/10 text-blue-300",
+    Warning: "border-amber-500/40 bg-amber-500/10 text-amber-300",
+    Critical: "border-red-500/40 bg-red-500/10 text-red-300",
+    Success: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
+  };
 
   return (
-    <span className="w-fit rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
-      {percent}% confidence
+    <span
+      className={`w-fit rounded-full border px-3 py-1 text-xs font-semibold ${styles[severity]}`}
+    >
+      {severity}
     </span>
   );
 }

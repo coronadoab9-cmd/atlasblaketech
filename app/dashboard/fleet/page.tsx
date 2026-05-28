@@ -1,10 +1,12 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { mockFleetStats, mockTrucks } from "../../data/mock-platform";
+import { getFleetStats, getTrucks } from "../../lib/platform-api";
 
-export default function FleetDashboardPage() {
-  const stats = mockFleetStats;
-  const trucks = mockTrucks;
+export default async function FleetDashboardPage() {
+  const [stats, trucks] = await Promise.all([
+    getFleetStats(),
+    getTrucks(),
+  ]);
 
   return (
     <main className="min-h-screen bg-[#020817] text-white">
@@ -22,9 +24,9 @@ export default function FleetDashboardPage() {
             </h1>
 
             <p className="mt-6 text-lg leading-8 text-slate-300">
-              This page is the beginning of the AtlasBlake fleet dashboard. It
-              will eventually connect to the same GPS, truck, driver, and eTicket
-              data already running inside your BTC system.
+              This page now reads through the AtlasBlake platform API layer.
+              For now, it still uses mock data behind the scenes. Later, this
+              same page can switch to live GPS, trucks, drivers, and device data.
             </p>
           </div>
 
@@ -48,7 +50,7 @@ export default function FleetDashboardPage() {
                 </div>
 
                 <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-300">
-                  Shared Mock Data
+                  API Layer
                 </span>
               </div>
 
@@ -70,15 +72,26 @@ export default function FleetDashboardPage() {
                     <span className="font-bold text-white">
                       {truck.truck_number}
                     </span>
-                    <span className="text-slate-300">{truck.driver_name}</span>
+
+                    <span className="text-slate-300">
+                      {truck.driver_name || "-"}
+                    </span>
+
                     <span>
                       <StatusBadge status={truck.status} />
                     </span>
-                    <span className="text-slate-300">{truck.job_number}</span>
+
+                    <span className="text-slate-300">
+                      {truck.job_number || "-"}
+                    </span>
+
                     <span className="text-slate-300">
                       {truck.speed_mph ?? 0} mph
                     </span>
-                    <span className="text-slate-400">{truck.last_updated}</span>
+
+                    <span className="text-slate-400">
+                      {truck.last_updated || "-"}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -139,6 +152,7 @@ function StatCard({
   return (
     <div className="rounded-2xl border border-[#12315F] bg-[#071225] p-5">
       <p className="text-sm text-slate-400">{label}</p>
+
       <p
         className={`mt-3 text-3xl font-bold ${
           warning ? "text-amber-300" : "text-white"
@@ -162,6 +176,7 @@ function InsightCard({ title, text }: { title: string; text: string }) {
   return (
     <div className="rounded-2xl border border-slate-800 bg-[#0B1730] p-4">
       <h3 className="font-semibold text-white">{title}</h3>
+
       <p className="mt-2 text-sm leading-6 text-slate-400">{text}</p>
     </div>
   );

@@ -1,9 +1,9 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { mockETickets } from "../../data/mock-platform";
+import { getETickets } from "../../lib/platform-api";
 
-export default function ETicketsDashboardPage() {
-  const tickets = mockETickets;
+export default async function ETicketsDashboardPage() {
+  const tickets = await getETickets();
 
   const pendingCount = tickets.filter(
     (ticket) => ticket.status === "pending"
@@ -33,9 +33,9 @@ export default function ETicketsDashboardPage() {
             </h1>
 
             <p className="mt-6 text-lg leading-8 text-slate-300">
-              This page is the beginning of the AtlasBlake eTicket dashboard. It
-              will eventually connect to the ticket creation, signing, PDF, QR,
-              GPS, and camera workflows already created in your BTC platform.
+              This page now reads through the AtlasBlake platform API layer.
+              For now, it still uses mock data behind the scenes. Later, this
+              same page can switch to live BTC and AtlasBlake eTicket records.
             </p>
           </div>
 
@@ -58,7 +58,7 @@ export default function ETicketsDashboardPage() {
                 </div>
 
                 <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-300">
-                  Shared Mock Data
+                  API Layer
                 </span>
               </div>
 
@@ -81,21 +81,27 @@ export default function ETicketsDashboardPage() {
                     <span className="font-bold text-white">
                       #{ticket.ticket_number}
                     </span>
+
                     <span className="text-slate-300">
                       {ticket.customer_name}
                     </span>
+
                     <span className="text-slate-300">
                       {ticket.truck_number}
                     </span>
+
                     <span className="text-slate-300">
-                      {ticket.job_number}
+                      {ticket.job_number || "-"}
                     </span>
+
                     <span className="text-slate-300">
-                      {ticket.mix_number}
+                      {ticket.mix_number || "-"}
                     </span>
+
                     <span className="text-slate-300">
-                      {ticket.quantity}
+                      {ticket.quantity ?? "-"}
                     </span>
+
                     <span>
                       <StatusBadge status={ticket.status} />
                     </span>
@@ -115,13 +121,19 @@ export default function ETicketsDashboardPage() {
 
               <div className="mt-6 space-y-4">
                 <InsightCard
-                  title="Pending signature"
-                  text="Ticket #1001 is still waiting for customer acceptance."
+                  title="Pending signatures"
+                  text={`${pendingCount} ticket${
+                    pendingCount === 1 ? " is" : "s are"
+                  } waiting for customer acceptance.`}
                 />
+
                 <InsightCard
-                  title="Rejected delivery"
-                  text="Ticket #1003 was rejected with reason: Slump."
+                  title="Rejected deliveries"
+                  text={`${rejectedCount} ticket${
+                    rejectedCount === 1 ? " has" : "s have"
+                  } a rejected delivery status.`}
                 />
+
                 <InsightCard
                   title="PDF workflow"
                   text="Signed tickets will generate customer-facing PDF delivery records."
@@ -162,6 +174,7 @@ function StatCard({
   return (
     <div className="rounded-2xl border border-[#12315F] bg-[#071225] p-5">
       <p className="text-sm text-slate-400">{label}</p>
+
       <p
         className={`mt-3 text-3xl font-bold ${
           warning
@@ -201,6 +214,7 @@ function InsightCard({ title, text }: { title: string; text: string }) {
   return (
     <div className="rounded-2xl border border-slate-800 bg-[#0B1730] p-4">
       <h3 className="font-semibold text-white">{title}</h3>
+
       <p className="mt-2 text-sm leading-6 text-slate-400">{text}</p>
     </div>
   );

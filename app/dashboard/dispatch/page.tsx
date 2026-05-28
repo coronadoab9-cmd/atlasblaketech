@@ -1,10 +1,12 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { mockDispatchLoads, mockDispatchStats } from "../../data/mock-platform";
+import { getDispatchLoads, getDispatchStats } from "../../lib/platform-api";
 
-export default function DispatchDashboardPage() {
-  const loads = mockDispatchLoads;
-  const stats = mockDispatchStats;
+export default async function DispatchDashboardPage() {
+  const [loads, stats] = await Promise.all([
+    getDispatchLoads(),
+    getDispatchStats(),
+  ]);
 
   return (
     <main className="min-h-screen bg-[#020817] text-white">
@@ -22,9 +24,10 @@ export default function DispatchDashboardPage() {
             </h1>
 
             <p className="mt-6 text-lg leading-8 text-slate-300">
-              This page now reads from the shared AtlasBlake platform data layer.
-              Later, these loads will come from the backend and connect directly
-              to live trucks, drivers, plants, and eTickets.
+              This page now reads through the AtlasBlake platform API layer.
+              For now, it still uses mock data behind the scenes. Later, this
+              same page can switch to live orders, loads, trucks, plants, drivers,
+              and eTickets.
             </p>
           </div>
 
@@ -32,7 +35,11 @@ export default function DispatchDashboardPage() {
             <StatCard label="Scheduled Loads" value={stats.scheduled_loads} />
             <StatCard label="Dispatched" value={stats.dispatched} />
             <StatCard label="On Site" value={stats.on_site} />
-            <StatCard label="Needs Attention" value={stats.needs_attention} warning />
+            <StatCard
+              label="Needs Attention"
+              value={stats.needs_attention}
+              warning
+            />
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
@@ -41,12 +48,12 @@ export default function DispatchDashboardPage() {
                 <div>
                   <h2 className="text-2xl font-bold">Today’s Dispatch Board</h2>
                   <p className="mt-2 text-sm text-slate-400">
-                    Shared data source: loads → trucks → eTickets → reports.
+                    API source path: dispatch loads → trucks → eTickets → reports.
                   </p>
                 </div>
 
                 <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-300">
-                  Shared Mock Data
+                  API Layer
                 </span>
               </div>
 
@@ -71,15 +78,29 @@ export default function DispatchDashboardPage() {
                     <span className="font-bold text-white">
                       {load.scheduled_time}
                     </span>
-                    <span className="text-slate-300">{load.order_number}</span>
-                    <span className="text-slate-300">{load.customer_name}</span>
+
+                    <span className="text-slate-300">
+                      {load.order_number}
+                    </span>
+
+                    <span className="text-slate-300">
+                      {load.customer_name}
+                    </span>
+
                     <span className="text-slate-300">{load.job_number}</span>
-                    <span className="text-slate-300">{load.truck_number}</span>
+
+                    <span className="text-slate-300">
+                      {load.truck_number}
+                    </span>
+
                     <span className="text-slate-300">{load.mix}</span>
+
                     <span className="text-slate-300">{load.quantity}</span>
+
                     <span className="text-blue-300">
                       #{load.ticket_number || "-"}
                     </span>
+
                     <span>
                       <StatusBadge status={load.status} />
                     </span>
@@ -92,22 +113,26 @@ export default function DispatchDashboardPage() {
               <h2 className="text-2xl font-bold">Dispatch Intelligence</h2>
 
               <p className="mt-3 text-sm leading-6 text-slate-400">
-                This panel will eventually detect dispatch issues before they
-                become bigger problems.
+                This panel will eventually detect dispatch problems before they
+                become bigger issues.
               </p>
 
               <div className="mt-6 space-y-4">
                 <InsightCard
                   title="Truck assignment check"
-                  text="All shared dispatch loads currently have truck assignments."
+                  text={`${loads.length} active load${
+                    loads.length === 1 ? " is" : "s are"
+                  } visible through the API layer.`}
                 />
+
                 <InsightCard
                   title="Ticket readiness"
-                  text="Each shared load is linked to a future public eTicket token."
+                  text="Dispatch loads can connect directly to customer-facing eTicket tokens."
                 />
+
                 <InsightCard
                   title="Plant activity"
-                  text="Compare scheduled load times against real GPS and ticket events."
+                  text="Compare scheduled load times against real GPS, ticket events, and driver activity."
                 />
               </div>
             </section>
@@ -117,9 +142,9 @@ export default function DispatchDashboardPage() {
             <h2 className="text-2xl font-bold">Why this page matters</h2>
 
             <p className="mt-4 max-w-4xl text-slate-300">
-              Dispatch is the center of the system. Now this page is connected to
-              the same shared data layer as the fleet, eTicket, admin, AI, and
-              command center pages.
+              Dispatch is the center of the system. Now this page is connected
+              through the same API layer as the command center, fleet, and
+              eTicket pages.
             </p>
           </section>
         </div>
@@ -142,6 +167,7 @@ function StatCard({
   return (
     <div className="rounded-2xl border border-[#12315F] bg-[#071225] p-5">
       <p className="text-sm text-slate-400">{label}</p>
+
       <p
         className={`mt-3 text-3xl font-bold ${
           warning ? "text-amber-300" : "text-white"
@@ -165,6 +191,7 @@ function InsightCard({ title, text }: { title: string; text: string }) {
   return (
     <div className="rounded-2xl border border-slate-800 bg-[#0B1730] p-4">
       <h3 className="font-semibold text-white">{title}</h3>
+
       <p className="mt-2 text-sm leading-6 text-slate-400">{text}</p>
     </div>
   );

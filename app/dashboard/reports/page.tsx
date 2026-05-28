@@ -1,10 +1,12 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { mockReports, mockReportStats } from "../../data/mock-platform";
+import { getReports, getReportStats } from "../../lib/platform-api";
 
-export default function ReportsDashboardPage() {
-  const reports = mockReports;
-  const stats = mockReportStats;
+export default async function ReportsDashboardPage() {
+  const [reports, stats] = await Promise.all([
+    getReports(),
+    getReportStats(),
+  ]);
 
   return (
     <main className="min-h-screen bg-[#020817] text-white">
@@ -22,9 +24,10 @@ export default function ReportsDashboardPage() {
             </h1>
 
             <p className="mt-6 text-lg leading-8 text-slate-300">
-              This page now reads from the shared AtlasBlake platform data layer.
-              Later, these reports will be generated from real dispatch loads,
-              fleet activity, signed eTickets, customer records, and AI summaries.
+              This page now reads through the AtlasBlake platform API layer.
+              For now, it still uses mock data behind the scenes. Later, these
+              reports can be generated from real dispatch loads, fleet activity,
+              signed eTickets, customer records, and AI summaries.
             </p>
           </div>
 
@@ -32,7 +35,11 @@ export default function ReportsDashboardPage() {
             <StatCard label="Reports Today" value={stats.reports_today} />
             <StatCard label="Ready" value={stats.ready} />
             <StatCard label="Processing" value={stats.processing} />
-            <StatCard label="Needs Review" value={stats.needs_review} warning />
+            <StatCard
+              label="Needs Review"
+              value={stats.needs_review}
+              warning
+            />
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
@@ -41,13 +48,13 @@ export default function ReportsDashboardPage() {
                 <div>
                   <h2 className="text-2xl font-bold">Report Library</h2>
                   <p className="mt-2 text-sm text-slate-400">
-                    Shared data source: reports generated from dispatch, fleet,
+                    API source path: reports generated from dispatch, fleet,
                     eTickets, exceptions, and customer activity.
                   </p>
                 </div>
 
                 <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-300">
-                  Shared Mock Data
+                  API Layer
                 </span>
               </div>
 
@@ -68,11 +75,15 @@ export default function ReportsDashboardPage() {
                     <span className="font-bold text-white">
                       {report.report_name}
                     </span>
+
                     <span className="text-slate-300">{report.module}</span>
+
                     <span className="text-slate-300">{report.period}</span>
+
                     <span>
                       <StatusBadge status={report.status} />
                     </span>
+
                     <span className="text-slate-400">
                       {report.last_generated}
                     </span>
@@ -92,12 +103,16 @@ export default function ReportsDashboardPage() {
               <div className="mt-6 space-y-4">
                 <InsightCard
                   title="Daily summary"
-                  text="Summarize loads dispatched, tickets signed, rejected deliveries, and active trucks."
+                  text={`${reports.length} report${
+                    reports.length === 1 ? " is" : "s are"
+                  } visible through the API layer.`}
                 />
+
                 <InsightCard
                   title="Exception report"
                   text="Highlight missing signatures, rejected loads, water added issues, and delayed deliveries."
                 />
+
                 <InsightCard
                   title="Customer history"
                   text="Generate customer-specific delivery records and signed ticket history."
@@ -112,8 +127,8 @@ export default function ReportsDashboardPage() {
             <p className="mt-4 max-w-4xl text-slate-300">
               Reports are where the platform becomes valuable to owners,
               managers, dispatchers, accounting, and customers. Now this page is
-              connected to the same shared data layer as dispatch, fleet,
-              eTickets, admin, AI, and the command center.
+              connected through the same API layer as the command center, fleet,
+              eTickets, and dispatch pages.
             </p>
           </section>
         </div>
@@ -136,6 +151,7 @@ function StatCard({
   return (
     <div className="rounded-2xl border border-[#12315F] bg-[#071225] p-5">
       <p className="text-sm text-slate-400">{label}</p>
+
       <p
         className={`mt-3 text-3xl font-bold ${
           warning ? "text-amber-300" : "text-white"
@@ -152,6 +168,7 @@ function StatusBadge({ status }: { status: string }) {
     Ready: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
     Processing: "border-blue-500/40 bg-blue-500/10 text-blue-300",
     "Needs Review": "border-amber-500/40 bg-amber-500/10 text-amber-300",
+    Failed: "border-red-500/40 bg-red-500/10 text-red-300",
   };
 
   return (
@@ -169,6 +186,7 @@ function InsightCard({ title, text }: { title: string; text: string }) {
   return (
     <div className="rounded-2xl border border-slate-800 bg-[#0B1730] p-4">
       <h3 className="font-semibold text-white">{title}</h3>
+
       <p className="mt-2 text-sm leading-6 text-slate-400">{text}</p>
     </div>
   );
