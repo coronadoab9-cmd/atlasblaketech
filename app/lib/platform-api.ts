@@ -17,7 +17,7 @@ import {
   mockTrucks,
   mockDrivers,
 } from "../data/mock-platform";
-
+import { PLATFORM_ENDPOINTS } from "./platform-endpoints";
 import type { Company, CompanyUser, PlatformModule } from "../types/company";
 import type { ETicket } from "../types/eticket";
 import type { Truck, FleetDashboardStats, Driver, Device } from "../types/fleet";
