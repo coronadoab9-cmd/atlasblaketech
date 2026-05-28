@@ -131,6 +131,12 @@ export default async function DashboardPage() {
               href="/dashboard/admin"
               status="Started"
             />
+            <ModuleCard
+              title="Developer Center"
+              description="Backend API contract, required platform routes, endpoint planning, and live backend integration checklist."
+              href="/dashboard/developer"
+              status="New"
+            />
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1fr]">
