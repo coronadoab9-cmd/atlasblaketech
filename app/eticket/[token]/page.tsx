@@ -1,6 +1,7 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { buildEticketPdfUrl } from "../../lib/api";
+import { mockETickets } from "../../data/mock-platform";
 import type { ETicket } from "../../types/eticket";
 
 type PageProps = {
@@ -12,21 +13,8 @@ type PageProps = {
 export default async function PublicETicketPage({ params }: PageProps) {
   const { token } = await params;
 
-  const ticket: ETicket = {
-    id: 1,
-    token,
-    ticket_number: "1001",
-    customer_name: "Customer Site",
-    job_number: "JOB-1048",
-    truck_number: "BTS-01A",
-    driver_name: "Driver Assigned",
-    mix_number: "3000",
-    mix_description: "Ready Mix Concrete",
-    quantity: 10,
-    status: "pending",
-    load_time: "Today, 8:15 AM",
-    water_allowed: 2,
-  };
+  const ticket =
+    mockETickets.find((item) => item.token === token) || createFallbackTicket(token);
 
   return (
     <main className="min-h-screen bg-[#020817] text-white">
@@ -44,9 +32,9 @@ export default async function PublicETicketPage({ params }: PageProps) {
             </h1>
 
             <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-              This is the beginning of the AtlasBlake public eTicket experience.
-              It will eventually use the same signing, GPS, camera, QR, and PDF
-              workflow from your BTC eTicket system.
+              This public eTicket route is now reading from the shared AtlasBlake
+              platform data layer. Later, this same page will pull real ticket
+              records from the backend.
             </p>
           </div>
 
@@ -84,14 +72,25 @@ export default async function PublicETicketPage({ params }: PageProps) {
 
               <div className="mt-6 rounded-2xl border border-blue-500/30 bg-blue-500/10 p-5">
                 <h3 className="font-bold text-white">Water Added</h3>
+
                 <p className="mt-2 text-sm leading-6 text-slate-300">
                   Future workflow: the customer and driver will be able to review
                   water added, QC water, and customer water added before signing.
                 </p>
+
                 <p className="mt-3 text-sm text-blue-300">
                   Water allowed: {ticket.water_allowed ?? 0} gallons per yard
                 </p>
               </div>
+
+              {ticket.rejection_reason && (
+                <div className="mt-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-5">
+                  <h3 className="font-bold text-red-200">Rejection Reason</h3>
+                  <p className="mt-2 text-sm text-red-100">
+                    {ticket.rejection_reason}
+                  </p>
+                </div>
+              )}
             </section>
 
             <section className="rounded-3xl border border-[#12315F] bg-[#071225] p-6 shadow-2xl shadow-blue-950/20">
@@ -143,9 +142,9 @@ export default async function PublicETicketPage({ params }: PageProps) {
             <h2 className="text-2xl font-bold">Why this page matters</h2>
 
             <p className="mt-4 max-w-4xl text-slate-300">
-              This route creates the public ticket link structure that drivers,
-              customers, QR codes, and the Android tablet app can open later.
-              Example: /eticket/sample-ticket-1001.
+              The dashboard and public eTicket page now share the same ticket
+              source. This is the same pattern we will use when we replace mock
+              data with real backend API data.
             </p>
           </section>
         </div>
@@ -154,6 +153,24 @@ export default async function PublicETicketPage({ params }: PageProps) {
       <Footer />
     </main>
   );
+}
+
+function createFallbackTicket(token: string): ETicket {
+  return {
+    id: 0,
+    token,
+    ticket_number: "Unknown",
+    customer_name: "Ticket Not Found",
+    job_number: "-",
+    truck_number: "-",
+    driver_name: "-",
+    mix_number: "-",
+    mix_description: "-",
+    quantity: 0,
+    status: "pending",
+    load_time: "-",
+    water_allowed: 0,
+  };
 }
 
 function InfoCard({ label, value }: { label: string; value: string }) {

@@ -1,58 +1,21 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import type { ETicket } from "../../types/eticket";
-
-const tickets: ETicket[] = [
-  {
-    id: 1,
-    token: "sample-ticket-1001",
-    ticket_number: "1001",
-    customer_name: "Customer Site",
-    job_number: "JOB-1048",
-    truck_number: "BTS-01A",
-    driver_name: "Driver Assigned",
-    mix_number: "3000",
-    mix_description: "Ready Mix Concrete",
-    quantity: 10,
-    status: "pending",
-    load_time: "Today, 8:15 AM",
-  },
-  {
-    id: 2,
-    token: "sample-ticket-1002",
-    ticket_number: "1002",
-    customer_name: "Commercial Pour",
-    job_number: "JOB-1051",
-    truck_number: "BTS-002",
-    driver_name: "Driver Assigned",
-    mix_number: "3500",
-    mix_description: "Ready Mix Concrete",
-    quantity: 9,
-    status: "signed",
-    load_time: "Today, 9:05 AM",
-    signed_at: "Today, 9:42 AM",
-  },
-  {
-    id: 3,
-    token: "sample-ticket-1003",
-    ticket_number: "1003",
-    customer_name: "Project Location",
-    job_number: "JOB-1054",
-    truck_number: "BTS-003",
-    driver_name: "Driver Assigned",
-    mix_number: "4000",
-    mix_description: "Ready Mix Concrete",
-    quantity: 11,
-    status: "rejected",
-    load_time: "Today, 10:20 AM",
-    rejection_reason: "Slump",
-  },
-];
+import { mockETickets } from "../../data/mock-platform";
 
 export default function ETicketsDashboardPage() {
-  const pendingCount = tickets.filter((ticket) => ticket.status === "pending").length;
-  const signedCount = tickets.filter((ticket) => ticket.status === "signed").length;
-  const rejectedCount = tickets.filter((ticket) => ticket.status === "rejected").length;
+  const tickets = mockETickets;
+
+  const pendingCount = tickets.filter(
+    (ticket) => ticket.status === "pending"
+  ).length;
+
+  const signedCount = tickets.filter(
+    (ticket) => ticket.status === "signed"
+  ).length;
+
+  const rejectedCount = tickets.filter(
+    (ticket) => ticket.status === "rejected"
+  ).length;
 
   return (
     <main className="min-h-screen bg-[#020817] text-white">
@@ -95,7 +58,7 @@ export default function ETicketsDashboardPage() {
                 </div>
 
                 <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-300">
-                  Mock Data
+                  Shared Mock Data
                 </span>
               </div>
 
@@ -118,11 +81,21 @@ export default function ETicketsDashboardPage() {
                     <span className="font-bold text-white">
                       #{ticket.ticket_number}
                     </span>
-                    <span className="text-slate-300">{ticket.customer_name}</span>
-                    <span className="text-slate-300">{ticket.truck_number}</span>
-                    <span className="text-slate-300">{ticket.job_number}</span>
-                    <span className="text-slate-300">{ticket.mix_number}</span>
-                    <span className="text-slate-300">{ticket.quantity}</span>
+                    <span className="text-slate-300">
+                      {ticket.customer_name}
+                    </span>
+                    <span className="text-slate-300">
+                      {ticket.truck_number}
+                    </span>
+                    <span className="text-slate-300">
+                      {ticket.job_number}
+                    </span>
+                    <span className="text-slate-300">
+                      {ticket.mix_number}
+                    </span>
+                    <span className="text-slate-300">
+                      {ticket.quantity}
+                    </span>
                     <span>
                       <StatusBadge status={ticket.status} />
                     </span>
@@ -158,9 +131,7 @@ export default function ETicketsDashboardPage() {
           </div>
 
           <section className="mt-10 rounded-3xl border border-blue-500/30 bg-blue-500/10 p-8">
-            <h2 className="text-2xl font-bold">
-              Why this page matters
-            </h2>
+            <h2 className="text-2xl font-bold">Why this page matters</h2>
 
             <p className="mt-4 max-w-4xl text-slate-300">
               Your BTC system already has eTicket signing, GPS capture, photo

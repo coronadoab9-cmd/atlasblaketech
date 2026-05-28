@@ -1,49 +1,11 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import type { Truck, FleetDashboardStats } from "../../types/fleet";
-
-const trucks: Truck[] = [
-  {
-    truck_number: "BTS-01A",
-    driver_name: "Driver Assigned",
-    status: "En Route",
-    speed_mph: 48,
-    job_number: "JOB-1048",
-    customer_name: "Customer Site",
-    address: "Dallas, TX",
-    last_updated: "2 min ago",
-  },
-  {
-    truck_number: "BTS-002",
-    driver_name: "Driver Assigned",
-    status: "Loading",
-    speed_mph: 0,
-    job_number: "JOB-1051",
-    customer_name: "Commercial Pour",
-    address: "Irving, TX",
-    last_updated: "4 min ago",
-  },
-  {
-    truck_number: "BTS-003",
-    driver_name: "Driver Assigned",
-    status: "Arrived On Site",
-    speed_mph: 0,
-    job_number: "JOB-1054",
-    customer_name: "Project Location",
-    address: "Sherman, TX",
-    last_updated: "1 min ago",
-  },
-];
-
-const stats: FleetDashboardStats = {
-  active_trucks: 3,
-  active_loads: 7,
-  en_route: 1,
-  pouring: 0,
-  exceptions: 1,
-};
+import { mockFleetStats, mockTrucks } from "../../data/mock-platform";
 
 export default function FleetDashboardPage() {
+  const stats = mockFleetStats;
+  const trucks = mockTrucks;
+
   return (
     <main className="min-h-screen bg-[#020817] text-white">
       <Navbar />
@@ -86,7 +48,7 @@ export default function FleetDashboardPage() {
                 </div>
 
                 <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-300">
-                  Mock Data
+                  Shared Mock Data
                 </span>
               </div>
 
@@ -148,9 +110,7 @@ export default function FleetDashboardPage() {
           </div>
 
           <section className="mt-10 rounded-3xl border border-blue-500/30 bg-blue-500/10 p-8">
-            <h2 className="text-2xl font-bold">
-              Why this page matters
-            </h2>
+            <h2 className="text-2xl font-bold">Why this page matters</h2>
 
             <p className="mt-4 max-w-4xl text-slate-300">
               Your Android app already sends truck GPS data to the backend. This
