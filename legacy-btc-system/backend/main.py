@@ -9,9 +9,15 @@ import smtplib
 import textwrap
 import sqlite3
 import uuid
+import threading
 import boto3
+import requests
+import xml.etree.ElementTree as ET
+from lxml import etree
 from datetime import datetime, timedelta
 from email.message import EmailMessage
+from zeep import Client
+from zeep.transports import Transport
 from pathlib import Path
 from pypdf import PdfWriter, PdfReader
 from typing import Optional, List
@@ -152,6 +158,36 @@ def build_eticket_frontend_url(token: str) -> str:
 VISUAL_CROSSING_API_KEY = os.getenv("VISUAL_CROSSING_API_KEY", "")
 VISUAL_CROSSING_UNIT_GROUP = "us"
 APP_TIMEZONE = ZoneInfo("America/Chicago")
+
+
+# ================= SYSDYNE / CONCRETEGO CONFIG =================
+# Put these in Render environment variables. Do not hard-code production credentials here.
+SYSDYNE_WSDL_URL = os.getenv(
+    "SYSDYNE_WSDL_URL",
+    "https://bigtown-api.concretego.com/webcreteapi.asmx?WSDL",
+)
+SYSDYNE_APP_ID = os.getenv("SYSDYNE_APP_ID", "")
+SYSDYNE_APP_KEY = os.getenv("SYSDYNE_APP_KEY", "")
+SYSDYNE_SLUG = os.getenv("SYSDYNE_SLUG", "bigtown")
+SYSDYNE_USERNAME = os.getenv("SYSDYNE_USERNAME", "")
+SYSDYNE_PASSWORD = os.getenv("SYSDYNE_PASSWORD", "")
+SYSDYNE_SYNC_SECRET = os.getenv("SYSDYNE_SYNC_SECRET", "")
+SYSDYNE_AUTO_SYNC_ON_STARTUP = os.getenv("SYSDYNE_AUTO_SYNC_ON_STARTUP", "0").strip().lower() in {"1", "true", "yes", "on"}
+SYSDYNE_NS = "http://api.concretego.com/"
+WATER_LB_PER_GAL = 8.34
+
+# Prevent overlapping Sysdyne syncs if Render Cron fires while a previous sync is still running.
+SYSDYNE_SYNC_LOCK = threading.Lock()
+
+# Temporary absorption values. These affect calculated waterAllowed only and can be tuned later.
+ABSORPTION_BY_PLANT = {
+    "101": {"05": 2.9, "06": 0.5, "10": 1.2, "13": 1.4},
+    "102": {"05": 2.9, "06": 0.8, "10": 1.1, "13": 1.4},
+    "103": {"05": 2.9, "06": 1.1, "10": 1.0, "13": 1.2},
+    "201": {"05": 2.9, "06": 0.7, "10": 1.0, "13": 1.4},
+    "204": {"05": 2.0, "06": 0.8, "10": 1.1, "13": 1.4},
+}
+DEFAULT_ABSORPTION = {"05": 2.9, "06": 0.8, "10": 1.1, "13": 1.4}
 
 # KEEP YOUR EXISTING BIG_TOWN_LOGO_B64 STRING EXACTLY AS-IS HERE
 BIG_TOWN_LOGO_B64 = """PASTE YOUR CURRENT LONG BASE64 STRING HERE EXACTLY AS IT ALREADY EXISTS"""
@@ -344,6 +380,26 @@ def seed_admins():
     ensure_column(conn, "etickets", "digitalfleet_ticket_id", "digitalfleet_ticket_id TEXT")
     ensure_column(conn, "etickets", "digitalfleet_order_id", "digitalfleet_order_id TEXT")
     ensure_column(conn, "etickets", "digitalfleet_message_id", "digitalfleet_message_id TEXT")
+
+    ensure_column(conn, "etickets", "sysdyne_ticket_id", "sysdyne_ticket_id TEXT")
+    ensure_column(conn, "etickets", "sysdyne_order_id", "sysdyne_order_id TEXT")
+    ensure_column(conn, "etickets", "sysdyne_raw_xml", "sysdyne_raw_xml TEXT")
+    ensure_column(conn, "etickets", "batch_weights_json", "batch_weights_json TEXT")
+    ensure_column(conn, "etickets", "water_allowed_gallons", "water_allowed_gallons REAL DEFAULT 0")
+    ensure_column(conn, "etickets", "design_water_per_cy", "design_water_per_cy REAL DEFAULT 0")
+    ensure_column(conn, "etickets", "net_aggregate_free_water_gal", "net_aggregate_free_water_gal REAL DEFAULT 0")
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS sysdyne_sync_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sync_date TEXT,
+            tickets_seen INTEGER DEFAULT 0,
+            etickets_created INTEGER DEFAULT 0,
+            etickets_updated INTEGER DEFAULT 0,
+            raw_response TEXT,
+            created_at TEXT NOT NULL
+        )
+        """)
 
     ensure_column(conn, "etickets", "archived_at", "archived_at TEXT")
     ensure_column(conn, "etickets", "archived_by", "archived_by TEXT")
@@ -2309,6 +2365,622 @@ def create_eticket_from_job_if_needed(conn, truck_number: str):
     return dict(new_ticket) if new_ticket else None
 
 
+# ================= SYSDYNE / CONCRETEGO INTEGRATION =================
+
+def sysdyne_xml_request(inner_xml: str) -> str:
+    return f"""<?xml version="1.0"?>
+<?webcretexml version="1.0"?>
+<WebcreteXML>
+  <WebcreteXMLMsgsRq>
+    {inner_xml}
+  </WebcreteXMLMsgsRq>
+</WebcreteXML>"""
+
+
+def sysdyne_required_config_ok() -> bool:
+    return all([
+        SYSDYNE_WSDL_URL,
+        SYSDYNE_APP_ID,
+        SYSDYNE_APP_KEY,
+        SYSDYNE_SLUG,
+        SYSDYNE_USERNAME,
+        SYSDYNE_PASSWORD,
+    ])
+
+
+def sysdyne_make_ticket_header(ticket_id: str):
+    header = etree.Element(f"{{{SYSDYNE_NS}}}TicketHeader")
+    ticket = etree.SubElement(header, f"{{{SYSDYNE_NS}}}ticket")
+    ticket.text = str(ticket_id)
+    return header
+
+
+def sysdyne_get_client() -> Client:
+    if not sysdyne_required_config_ok():
+        raise HTTPException(
+            status_code=500,
+            detail="Sysdyne credentials are not configured. Set SYSDYNE_APP_ID, SYSDYNE_APP_KEY, SYSDYNE_USERNAME, SYSDYNE_PASSWORD, and SYSDYNE_SLUG.",
+        )
+    return Client(
+        SYSDYNE_WSDL_URL,
+        transport=Transport(session=requests.Session(), timeout=120),
+    )
+
+
+def sysdyne_login(client: Client):
+    res = client.service.GetPublicKey(SYSDYNE_APP_ID, SYSDYNE_APP_KEY)
+    ticket_id = res["header"]["TicketHeader"]["ticket"]
+    if not ticket_id or str(ticket_id) == "00000000-0000-0000-0000-000000000000":
+        raise RuntimeError("Sysdyne GetPublicKey failed")
+
+    ticket_hdr = sysdyne_make_ticket_header(ticket_id)
+    result = client.service.Login2(
+        SYSDYNE_USERNAME,
+        SYSDYNE_PASSWORD,
+        SYSDYNE_SLUG,
+        _soapheaders=[ticket_hdr],
+    )
+    if result is not True:
+        raise RuntimeError("Sysdyne Login2 failed")
+    return ticket_hdr
+
+
+def sysdyne_process_request(client: Client, request_xml: str) -> str:
+    ticket_hdr = sysdyne_login(client)
+    try:
+        return client.service.ProcessRequest(request_xml, _soapheaders=[ticket_hdr])
+    finally:
+        try:
+            client.service.Logout(_soapheaders=[ticket_hdr])
+        except Exception:
+            pass
+
+
+def sysdyne_ticket_query(date_from: str, date_to: str) -> str:
+    return sysdyne_xml_request(f"""
+<TicketQueryRq>
+  <FromOrderDate>{date_from}</FromOrderDate>
+  <ToOrderDate>{date_to}</ToOrderDate>
+  <IncludeRemovedTicket>true</IncludeRemovedTicket>
+  <IncludeSuspendedTicket>true</IncludeSuspendedTicket>
+  <IncludeInvoicedTicket>true</IncludeInvoicedTicket>
+  <WithBatchWeightsOnly>true</WithBatchWeightsOnly>
+</TicketQueryRq>
+""")
+
+
+def sysdyne_item_mix_design_query(mix_code: str, location_code: str) -> str:
+    return sysdyne_xml_request(f"""
+<ItemQueryRq>
+  <Code>{mix_code}</Code>
+  <LocationCode>{location_code}</LocationCode>
+  <IncludeRetElement>MIXDESIGN</IncludeRetElement>
+</ItemQueryRq>
+""")
+
+
+def sysdyne_clean(node) -> str:
+    return node.text.strip() if node is not None and node.text else ""
+
+
+def sysdyne_child(parent, name: str) -> str:
+    if parent is None:
+        return ""
+    return sysdyne_clean(parent.find(name))
+
+
+def sysdyne_float(value) -> float:
+    try:
+        if value is None:
+            return 0.0
+        return float(str(value).replace(",", "").strip())
+    except Exception:
+        return 0.0
+
+
+def sysdyne_material_code(material) -> str:
+    return sysdyne_child(material, "ItemCode").zfill(2)
+
+
+def sysdyne_normalize_plant(value: str) -> str:
+    text = str(value or "").upper()
+    if "101" in text or "CX" in text or "BTS-01" in text or "BTS-OIA" in text:
+        return "101"
+    if "102" in text or "BLUE" in text or "BTS-02" in text:
+        return "102"
+    if "103" in text or "SHERMAN" in text or "BTS-03" in text:
+        return "103"
+    if "201" in text or "BTP-01" in text or "BTP-001" in text or "ENCORE" in text:
+        return "201"
+    if "204" in text or "BTP-04" in text or "BTP-004" in text or "WICHITA" in text:
+        return "204"
+    match = re.search(r"\b(101|102|103|201|204)\b", text)
+    if match:
+        return match.group(1)
+    return text.strip()
+
+
+def sysdyne_ticket_number(ticket) -> str:
+    return (
+        sysdyne_child(ticket, "TicketCode")
+        or sysdyne_child(ticket, "TicketNumber")
+        or sysdyne_child(ticket, "TicketID")
+    )
+
+
+def sysdyne_plant_code(ticket) -> str:
+    raw = (
+        sysdyne_child(ticket, "PlantCode")
+        or sysdyne_child(ticket, "PlantName")
+        or sysdyne_child(ticket, "LocationCode")
+        or sysdyne_child(ticket, "LocationName")
+    )
+    return sysdyne_normalize_plant(raw)
+
+
+def sysdyne_get_products(ticket):
+    return ticket.findall("./Products/Product")
+
+
+def sysdyne_get_materials(ticket):
+    return ticket.findall("./BatchResult/BatchWeight/Material")
+
+
+def sysdyne_classify_material(material) -> str:
+    code = sysdyne_material_code(material)
+    text = " ".join([
+        code,
+        sysdyne_child(material, "Name"),
+        sysdyne_child(material, "Description"),
+        sysdyne_child(material, "ItemCategoryCode"),
+        sysdyne_child(material, "ItemTypeName"),
+    ]).upper()
+
+    if "WATER" in text or code == "09":
+        return "WATER"
+    if "CEMENT" in text:
+        return "CEMENT"
+    if "SLAG" in text:
+        return "SLAG"
+    if "FLY" in text or "ASH" in text:
+        return "FLYASH"
+    if "NATURAL" in text and "SAND" in text:
+        return "NATURAL_SAND"
+    if code == "06":
+        return "NATURAL_SAND"
+    if "WASHED" in text or ("SAND" in text and "NATURAL" not in text) or code == "05":
+        return "WASHED_SAND"
+    if "89" in text or "3/8" in text or code == "13":
+        return "89_ROCK"
+    if "57" in text or "ROCK" in text or "STONE" in text or code == "10":
+        return "57_ROCK"
+    return "OTHER"
+
+
+def sysdyne_get_water_material(materials):
+    for material in materials:
+        if sysdyne_classify_material(material) == "WATER":
+            return material
+    return None
+
+
+def sysdyne_get_absorption(ticket, material) -> float:
+    plant = sysdyne_plant_code(ticket)
+    code = sysdyne_material_code(material)
+    return ABSORPTION_BY_PLANT.get(plant, {}).get(code, DEFAULT_ABSORPTION.get(code, 0.0))
+
+
+def sysdyne_aggregate_free_water_gal(ticket, material) -> float:
+    material_type = sysdyne_classify_material(material)
+    if material_type not in {"WASHED_SAND", "NATURAL_SAND", "57_ROCK", "89_ROCK"}:
+        return 0.0
+    target_weight = sysdyne_float(sysdyne_child(material, "BatchTarget"))
+    moisture = sysdyne_float(sysdyne_child(material, "MoisturePercent"))
+    absorption = sysdyne_get_absorption(ticket, material)
+    return target_weight * ((moisture - absorption) / 100.0) / WATER_LB_PER_GAL
+
+
+def sysdyne_net_aggregate_free_water(ticket, materials) -> float:
+    return sum(sysdyne_aggregate_free_water_gal(ticket, material) for material in materials)
+
+
+def sysdyne_fetch_mix_design(client: Client, mix_code: str, location_code: str) -> dict:
+    if not mix_code:
+        return {}
+    response = sysdyne_process_request(client, sysdyne_item_mix_design_query(mix_code, location_code or ""))
+    root = ET.fromstring(response)
+    item = root.find(".//ItemRet")
+    if item is None:
+        return {}
+
+    mix = item.find("./Mix")
+    data = {
+        "mixCode": sysdyne_child(item, "Code"),
+        "mixDescription": sysdyne_child(item, "Description"),
+        "waterCementRatio": sysdyne_float(sysdyne_child(mix, "WaterCementRatio")),
+        "strength": sysdyne_child(mix, "Strength"),
+        "slump": sysdyne_child(mix, "Slump"),
+        "airPercent": sysdyne_child(mix, "PercentAirVolume"),
+        "designWaterPerCY": 0.0,
+    }
+
+    last_description = ""
+    for node in item.findall(".//MixDesign//*"):
+        tag = str(node.tag).split("}")[-1]
+        if tag == "Description":
+            last_description = sysdyne_clean(node)
+        if tag == "Quantity" and "water" in last_description.lower():
+            data["designWaterPerCY"] = sysdyne_float(sysdyne_clean(node))
+            break
+
+    return data
+
+
+def sysdyne_material_amount_as_gallons(material, field_name: str) -> float:
+    """
+    Sysdyne water may come through as gal, lb, or a blank/unknown unit depending on plant setup.
+    eTickets need gallons, so convert lb to gallons and otherwise keep the numeric value.
+    """
+    if material is None:
+        return 0.0
+
+    amount = sysdyne_float(sysdyne_child(material, field_name))
+    unit = (
+        sysdyne_child(material, "BatchUnit")
+        or sysdyne_child(material, "Unit")
+        or sysdyne_child(material, "UOM")
+    ).strip().lower()
+
+    if unit in {"lb", "lbs", "pound", "pounds"}:
+        return amount / WATER_LB_PER_GAL
+
+    return amount
+
+
+def sysdyne_build_batch_weights(ticket, materials) -> list[list[str]]:
+    """
+    Store batch weights in the same 8-column list format the existing PDF renderer expects:
+    [Description, Design, Target, Actual, % Var, UOM, Moisture (%), Water (gal)]
+    """
+    rows = []
+    load_qty = sysdyne_float(sysdyne_child(ticket, "LoadQty"))
+
+    for material in materials:
+        code = sysdyne_child(material, "ItemCode")
+        name = sysdyne_child(material, "Name") or sysdyne_child(material, "Description") or "Material"
+        target = sysdyne_float(sysdyne_child(material, "BatchTarget"))
+        actual = sysdyne_float(sysdyne_child(material, "BatchActual"))
+        uom = sysdyne_child(material, "BatchUnit") or sysdyne_child(material, "Unit") or ""
+        moisture = sysdyne_float(sysdyne_child(material, "MoisturePercent"))
+        free_water = sysdyne_aggregate_free_water_gal(ticket, material)
+
+        design = target / load_qty if load_qty > 0 else target
+        pct_var = ((actual - target) / target * 100.0) if target else 0.0
+
+        material_type = sysdyne_classify_material(material)
+        show_moisture = material_type in {"WASHED_SAND", "NATURAL_SAND", "57_ROCK", "89_ROCK"}
+
+        rows.append([
+            f"{code}-{name}".strip("-"),
+            f"{design:.2f}",
+            f"{target:.2f}",
+            f"{actual:.2f}",
+            f"{pct_var:.2f}",
+            uom,
+            f"{moisture:.2f}" if show_moisture else "",
+            f"{free_water:.2f}" if show_moisture else "",
+        ])
+
+    return rows
+
+def sysdyne_best_load_time(ticket) -> str:
+    """
+    Return the best actual ticket/load time from Sysdyne.
+    Never fall back to utc_now() here, because that makes load_time equal sync time.
+    """
+
+    def clean_value(name: str) -> str:
+        return str(sysdyne_child(ticket, name) or "").strip()
+
+    def normalize_date(value: str) -> str:
+        value = str(value or "").strip()
+        if not value:
+            return ""
+
+        # Already ISO-like date/datetime
+        if re.match(r"^\d{4}-\d{2}-\d{2}", value):
+            return value[:10]
+
+        # US style dates
+        for fmt in ("%m/%d/%Y", "%m/%d/%y"):
+            try:
+                return datetime.strptime(value.split()[0], fmt).date().isoformat()
+            except Exception:
+                pass
+
+        return ""
+
+    def normalize_time(value: str) -> str:
+        value = str(value or "").strip()
+        if not value:
+            return ""
+
+        # If full datetime was provided, return it as-is.
+        if "T" in value and re.match(r"^\d{4}-\d{2}-\d{2}", value):
+            return value
+
+        # If datetime with space was provided.
+        if re.match(r"^\d{4}-\d{2}-\d{2}\s+\d{1,2}:\d{2}", value):
+            return value.replace(" ", "T", 1)
+
+        # HH:MM or HH:MM:SS
+        match = re.search(r"(\d{1,2}:\d{2}(?::\d{2})?)", value)
+        if match:
+            t = match.group(1)
+            if len(t.split(":")) == 2:
+                t += ":00"
+            return t
+
+        return ""
+
+    # 1) Try full datetime fields first.
+    full_datetime_fields = [
+        "LoadDateTime",
+        "LoadedDateTime",
+        "TicketDateTime",
+        "BatchDateTime",
+        "PrintDateTime",
+        "CreatedDateTime",
+        "CreateDateTime",
+    ]
+
+    for field in full_datetime_fields:
+        value = clean_value(field)
+        if value:
+            return value
+
+    # 2) Try date + time combinations.
+    date_fields = [
+        "TicketDate",
+        "LoadDate",
+        "LoadedDate",
+        "BatchDate",
+        "DeliveryDate",
+        "OrderDate",
+        "Date",
+    ]
+
+    time_fields = [
+        "LoadTime",
+        "LoadedTime",
+        "TicketTime",
+        "BatchTime",
+        "BatchStartTime",
+        "BatchEndTime",
+        "PrintTime",
+    ]
+
+    best_date = ""
+    for field in date_fields:
+        best_date = normalize_date(clean_value(field))
+        if best_date:
+            break
+
+    for field in time_fields:
+        raw_time = clean_value(field)
+
+        # Some "time" fields may actually contain full datetime.
+        full_time = normalize_time(raw_time)
+        if full_time and "T" in full_time:
+            return full_time
+
+        if best_date and full_time:
+            return f"{best_date}T{full_time}"
+
+    # 3) Last try: maybe one of the date fields already had full datetime.
+    for field in date_fields:
+        value = clean_value(field)
+        if value and ("T" in value or re.search(r"\d{1,2}:\d{2}", value)):
+            return value
+
+    # Do not use utc_now() here.
+    return ""
+
+def sysdyne_parse_ticket(ticket, mix_design: dict | None = None) -> dict:
+    mix_design = mix_design or {}
+    products = sysdyne_get_products(ticket)
+    product = products[0] if products else None
+    materials = sysdyne_get_materials(ticket)
+    water_material = sysdyne_get_water_material(materials)
+
+    ticket_number = sysdyne_ticket_number(ticket)
+    load_qty = sysdyne_float(sysdyne_child(product, "LoadQty")) if product is not None else 0.0
+    if load_qty <= 0:
+        load_qty = sysdyne_float(sysdyne_child(ticket, "LoadQty"))
+
+    mix_code = sysdyne_child(product, "Code") if product is not None else ""
+    if not mix_code:
+        mix_code = sysdyne_child(ticket, "MixCode")
+
+    mix_description = sysdyne_child(product, "Description") if product is not None else ""
+    if not mix_description:
+        mix_description = mix_design.get("mixDescription", "")
+
+    design_water_per_cy = sysdyne_float(mix_design.get("designWaterPerCY", 0.0))
+    water_target = sysdyne_material_amount_as_gallons(water_material, "BatchTarget")
+    if design_water_per_cy <= 0 and load_qty > 0 and water_target > 0:
+        design_water_per_cy = water_target / load_qty
+
+    actual_water = sysdyne_material_amount_as_gallons(water_material, "BatchActual")
+    design_water_total = design_water_per_cy * load_qty
+    free_water = sysdyne_net_aggregate_free_water(ticket, materials)
+    water_allowed = design_water_total - actual_water - free_water
+    if water_allowed < 0:
+        water_allowed = 0.0
+
+    plant = sysdyne_plant_code(ticket)
+    order_total = (
+        sysdyne_float(sysdyne_child(ticket, "OrderedQty"))
+        or sysdyne_float(sysdyne_child(ticket, "OrderQty"))
+        or load_qty
+    )
+    delivered_total = sysdyne_float(sysdyne_child(ticket, "DeliveredQty")) or load_qty
+
+    address = " ".join([
+        sysdyne_child(ticket, "DeliveryAddr1"),
+        sysdyne_child(ticket, "DeliveryAddr2"),
+        sysdyne_child(ticket, "DeliveryAddr3"),
+    ]).strip()
+
+    return {
+        "ticket_number": ticket_number,
+        "ticket_id": sysdyne_child(ticket, "TicketID"),
+        "order_number": sysdyne_child(ticket, "OrderCode") or sysdyne_child(ticket, "OrderNumber"),
+        "customer_name": sysdyne_child(ticket, "CustomerName") or "Customer",
+        "address": address,
+        "plant": plant,
+        "plant_name": sysdyne_child(ticket, "PlantName") or sysdyne_child(ticket, "LocationName"),
+        "location_code": sysdyne_child(ticket, "LocationCode"),
+        "truck_number": normalize_df_truck_name(sysdyne_child(ticket, "TruckCode")),
+        "driver": sysdyne_child(ticket, "DriverName"),
+        "mix_number": mix_code,
+        "mix_description": mix_description,
+        "product": mix_description or mix_code or "Concrete Mix",
+        "quantity": load_qty,
+        "delivered_qty_total": delivered_total,
+        "order_total": order_total,
+        "load_time": sysdyne_best_load_time(ticket),
+        "water_choice": f"{round(water_allowed, 1)} gal",
+        "water_allowed_gallons": round(water_allowed, 2),
+        "design_water_per_cy": round(design_water_per_cy, 2),
+        "actual_water_gal": round(actual_water, 2),
+        "net_aggregate_free_water_gal": round(free_water, 2),
+        "batch_weights": sysdyne_build_batch_weights(ticket, materials),
+        "raw_xml": ET.tostring(ticket, encoding="unicode"),
+    }
+
+
+def sysdyne_upsert_eticket(conn, parsed: dict):
+    cur = conn.cursor()
+    ticket_number = str(parsed.get("ticket_number") or "").strip()
+    if not ticket_number:
+        return None, False
+
+    existing = cur.execute(
+        """
+        SELECT *
+        FROM etickets
+        WHERE ticket_number = ?
+        LIMIT 1
+        """,
+        (ticket_number,),
+    ).fetchone()
+
+    token = existing["token"] if existing and existing["token"] else str(uuid.uuid4())
+    batch_json = json.dumps(parsed.get("batch_weights") or [])
+
+    values = (
+        f"sysdyne-{ticket_number}",
+        ticket_number,
+        parsed.get("customer_name") or "Customer",
+        parsed.get("order_number") or "",
+        parsed.get("address") or "",
+        parsed.get("plant") or parsed.get("plant_name") or "",
+        parsed.get("truck_number") or "",
+        parsed.get("product") or "Concrete Mix",
+        parsed.get("mix_number") or "",
+        parsed.get("mix_description") or "",
+        float(parsed.get("quantity") or 0),
+        float(parsed.get("delivered_qty_total") or parsed.get("quantity") or 0),
+        float(parsed.get("order_total") or parsed.get("quantity") or 0),
+        parsed.get("load_time") or "",
+        parsed.get("water_choice") or "0 gal",
+        float(parsed.get("water_allowed_gallons") or 0),
+        float(parsed.get("design_water_per_cy") or 0),
+        float(parsed.get("net_aggregate_free_water_gal") or 0),
+        batch_json,
+        parsed.get("ticket_id") or "",
+        parsed.get("order_number") or "",
+        parsed.get("raw_xml") or "",
+        API_QR_BATCH,
+        API_QR_TERMS,
+    )
+
+    if existing:
+        cur.execute(
+            """
+            UPDATE etickets
+            SET job_instance_id = ?,
+                ticket_number = ?,
+                customer_name = ?,
+                job_number = ?,
+                address = ?,
+                plant = ?,
+                truck_number = ?,
+                product = ?,
+                mix_number = ?,
+                mix_description = ?,
+                quantity = ?,
+                delivered_qty_total = ?,
+                order_total = ?,
+                load_time = COALESCE(NULLIF(?, ''), load_time),
+                water_choice = ?,
+                water_allowed_gallons = ?,
+                design_water_per_cy = ?,
+                net_aggregate_free_water_gal = ?,
+                batch_weights_json = ?,
+                sysdyne_ticket_id = ?,
+                sysdyne_order_id = ?,
+                sysdyne_raw_xml = ?,
+                batch_weights_qr_url = COALESCE(batch_weights_qr_url, ?),
+                terms_qr_url = COALESCE(terms_qr_url, ?)
+            WHERE id = ?
+            """,
+            values + (existing["id"],),
+        )
+        row = cur.execute("SELECT * FROM etickets WHERE id = ?", (existing["id"],)).fetchone()
+        return dict(row), False
+
+    cur.execute(
+        """
+        INSERT INTO etickets (
+            job_instance_id,
+            ticket_number,
+            customer_name,
+            job_number,
+            address,
+            plant,
+            truck_number,
+            product,
+            mix_number,
+            mix_description,
+            quantity,
+            delivered_qty_total,
+            order_total,
+            load_time,
+            water_choice,
+            water_allowed_gallons,
+            design_water_per_cy,
+            net_aggregate_free_water_gal,
+            batch_weights_json,
+            sysdyne_ticket_id,
+            sysdyne_order_id,
+            sysdyne_raw_xml,
+            batch_weights_qr_url,
+            terms_qr_url,
+            token,
+            status,
+            time_limit_minutes
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 90)
+        """,
+        values + (token,),
+    )
+    row = cur.execute("SELECT * FROM etickets WHERE id = ?", (cur.lastrowid,)).fetchone()
+    return dict(row), True
+
+
+
 def init_db():
     PDF_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -2417,6 +3089,20 @@ def init_db():
             longitude REAL,
             speed REAL,
             raw_json TEXT,
+            created_at TEXT NOT NULL
+        )
+        """
+    )
+
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS sysdyne_sync_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sync_date TEXT,
+            tickets_seen INTEGER DEFAULT 0,
+            etickets_created INTEGER DEFAULT 0,
+            etickets_updated INTEGER DEFAULT 0,
+            raw_response TEXT,
             created_at TEXT NOT NULL
         )
         """
@@ -2547,6 +3233,14 @@ def init_db():
 def startup():
     init_db()
     seed_admins()
+
+    if SYSDYNE_AUTO_SYNC_ON_STARTUP:
+        try:
+            today = datetime.now(APP_TIMEZONE).date().isoformat()
+            result = sysdyne_sync_date_to_etickets(today)
+            print("Sysdyne startup sync complete:", result)
+        except Exception as exc:
+            print("Sysdyne startup sync failed:", str(exc))
 
 
 class AdminLoginRequest(BaseModel):
@@ -2718,9 +3412,215 @@ class ETicketPdfExportRequest(BaseModel):
     ticket_ids: list[int]
 
 
+class SysdyneDateSyncRequest(BaseModel):
+    date: str
+
+
 @app.get("/health")
 def health():
     return {"ok": True}
+
+
+@app.get("/api/sysdyne/tickets")
+def preview_sysdyne_tickets(date: str, admin=Depends(require_admin)):
+    client = sysdyne_get_client()
+    date_from = f"{date}T00:00:00"
+    date_to = f"{date}T23:59:59"
+    response = sysdyne_process_request(client, sysdyne_ticket_query(date_from, date_to))
+    root = ET.fromstring(response)
+
+    mix_cache = {}
+    tickets = []
+
+    for ticket in root.findall(".//TicketRet"):
+        products = sysdyne_get_products(ticket)
+        product = products[0] if products else None
+        mix_code = sysdyne_child(product, "Code") if product is not None else sysdyne_child(ticket, "MixCode")
+        location_code = sysdyne_child(ticket, "LocationCode")
+        cache_key = (mix_code, location_code)
+
+        if cache_key not in mix_cache:
+            try:
+                mix_cache[cache_key] = sysdyne_fetch_mix_design(client, mix_code, location_code)
+            except Exception as exc:
+                print("Sysdyne mix design lookup failed:", mix_code, location_code, exc)
+                mix_cache[cache_key] = {}
+
+        tickets.append(sysdyne_parse_ticket(ticket, mix_cache[cache_key]))
+
+    return {"ok": True, "date": date, "count": len(tickets), "tickets": tickets}
+
+
+def sysdyne_sync_date_to_etickets(date: str) -> dict:
+    date = str(date or "").strip()
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", date):
+        raise HTTPException(status_code=400, detail="date must be YYYY-MM-DD")
+
+    client = sysdyne_get_client()
+    date_from = f"{date}T00:00:00"
+    date_to = f"{date}T23:59:59"
+    response = sysdyne_process_request(client, sysdyne_ticket_query(date_from, date_to))
+    root = ET.fromstring(response)
+    ticket_nodes = root.findall(".//TicketRet")
+
+    conn = get_conn()
+    cur = conn.cursor()
+    created = 0
+    updated = 0
+    rows = []
+    mix_cache = {}
+
+    try:
+        for ticket in ticket_nodes:
+            products = sysdyne_get_products(ticket)
+            product = products[0] if products else None
+            mix_code = sysdyne_child(product, "Code") if product is not None else sysdyne_child(ticket, "MixCode")
+            location_code = sysdyne_child(ticket, "LocationCode")
+            cache_key = (mix_code, location_code)
+
+            if cache_key not in mix_cache:
+                try:
+                    mix_cache[cache_key] = sysdyne_fetch_mix_design(client, mix_code, location_code)
+                except Exception as exc:
+                    print("Sysdyne mix design lookup failed:", mix_code, location_code, exc)
+                    mix_cache[cache_key] = {}
+
+            parsed = sysdyne_parse_ticket(ticket, mix_cache[cache_key])
+            row, was_created = sysdyne_upsert_eticket(conn, parsed)
+            if not row:
+                continue
+
+            if was_created:
+                created += 1
+            else:
+                updated += 1
+
+            rows.append({
+                "id": row.get("id"),
+                "ticket_number": row.get("ticket_number"),
+                "truck_number": row.get("truck_number"),
+                "customer_name": row.get("customer_name"),
+                "mix_number": row.get("mix_number"),
+                "quantity": row.get("quantity"),
+                "water_allowed_gallons": row.get("water_allowed_gallons"),
+                "token": row.get("token"),
+                "url": build_eticket_frontend_url(row.get("token")),
+                "created": was_created,
+            })
+
+        cur.execute(
+            """
+            INSERT INTO sysdyne_sync_log (
+                sync_date,
+                tickets_seen,
+                etickets_created,
+                etickets_updated,
+                raw_response,
+                created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (date, len(ticket_nodes), created, updated, response, utc_now()),
+        )
+
+        conn.commit()
+
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+
+    return {
+        "ok": True,
+        "date": date,
+        "tickets_seen": len(ticket_nodes),
+        "created": created,
+        "updated": updated,
+        "etickets": rows,
+    }
+
+
+@app.post("/api/sysdyne/sync-date")
+def sync_sysdyne_date(payload: SysdyneDateSyncRequest, admin=Depends(require_admin)):
+    return sysdyne_sync_date_to_etickets(payload.date)
+
+
+@app.post("/api/sysdyne/sync-today")
+def sync_sysdyne_today(admin=Depends(require_admin)):
+    today = datetime.now(APP_TIMEZONE).date().isoformat()
+    return sysdyne_sync_date_to_etickets(today)
+
+
+@app.post("/api/sysdyne/sync-now")
+def sync_sysdyne_now(
+    secret: Optional[str] = None,
+    x_sysdyne_sync_secret: str = Header(default=""),
+    include_details: bool = False,
+):
+    """
+    Render Cron / external scheduler endpoint.
+
+    Set SYSDYNE_SYNC_SECRET in Render, then call:
+    POST /api/sysdyne/sync-now?secret=YOUR_SECRET
+
+    Optional:
+    POST /api/sysdyne/sync-now?secret=YOUR_SECRET&include_details=true
+    """
+    if SYSDYNE_SYNC_SECRET:
+        provided_secret = secret or x_sysdyne_sync_secret
+        if provided_secret != SYSDYNE_SYNC_SECRET:
+            raise HTTPException(status_code=401, detail="Invalid Sysdyne sync secret")
+
+    if not SYSDYNE_SYNC_LOCK.acquire(blocking=False):
+        print("Sysdyne sync skipped because another sync is already running.")
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "sync_already_running",
+            "checked_at": utc_now(),
+        }
+
+    try:
+        today = datetime.now(APP_TIMEZONE).date().isoformat()
+
+        print("SYSYDYNE CRON SYNC STARTED")
+        print("Sync Date:", today)
+        print("Started At:", utc_now())
+
+        result = sysdyne_sync_date_to_etickets(today)
+
+        created_tickets = [
+            row for row in result.get("etickets", [])
+            if row.get("created")
+        ]
+
+        summary = {
+            "ok": True,
+            "skipped": False,
+            "date": result.get("date"),
+            "tickets_seen": result.get("tickets_seen"),
+            "created": result.get("created"),
+            "updated": result.get("updated"),
+            "created_ticket_numbers": [
+                row.get("ticket_number") for row in created_tickets
+            ],
+            "completed_at": utc_now(),
+        }
+
+        print("SYSYDYNE CRON SYNC COMPLETE:", summary)
+
+        if include_details:
+            summary["etickets"] = result.get("etickets", [])
+
+        return summary
+
+    except Exception as exc:
+        print("SYSYDYNE CRON SYNC FAILED:", str(exc))
+        raise
+
+    finally:
+        SYSDYNE_SYNC_LOCK.release()
 
 
 @app.post("/api/digitalfleet/push")
@@ -2737,6 +3637,7 @@ async def digitalfleet_push(payload: dict):
     cur = conn.cursor()
 
     created_or_updated = []
+    sync_dates_needed = []
 
     try:
         for event in events:
@@ -2824,17 +3725,36 @@ async def digitalfleet_push(payload: dict):
                     ),
                 )
 
-            if str(event.get("EventType") or "").upper() == "TICKET":
-                ticket = create_or_update_eticket_from_digitalfleet(conn, event)
-                if ticket:
-                    created_or_updated.append({
-                        "ticket_number": ticket.get("ticket_number"),
-                        "truck_number": ticket.get("truck_number"),
-                        "token": ticket.get("token"),
-                        "url": build_eticket_frontend_url(ticket.get("token")),
-                    })
+            event_type = str(event.get("EventType") or "").upper()
+
+            if event_type == "TICKET":
+                print("TICKET PUSH RECEIVED - WILL TRIGGER SYSDYNE SYNC AFTER COMMIT")
+                print("Ticket Number:", event.get("TicketNumber"))
+                print("Ticket ID:", event.get("TicketId"))
+                print("Event Time:", event.get("EventTime"))
+
+                sync_date, _ = central_date_parts(event.get("EventTime") or utc_now())
+
+                if sync_date:
+                    sync_dates_needed.append(sync_date)
+                else:
+                    sync_dates_needed.append(datetime.now(APP_TIMEZONE).date().isoformat())
 
         conn.commit()
+
+        for sync_date in sorted(set(sync_dates_needed)):
+            try:
+                sync_result = sysdyne_sync_date_to_etickets(sync_date)
+                print("SYSDYNE SYNC AFTER TICKET PUSH:", sync_result)
+                created_or_updated.append({
+                    "source": "sysdyne_sync_after_ticket_push",
+                    "date": sync_date,
+                    "created": sync_result.get("created"),
+                    "updated": sync_result.get("updated"),
+                    "tickets_seen": sync_result.get("tickets_seen"),
+                })
+            except Exception as sync_error:
+                print("SYSDYNE SYNC FAILED AFTER TICKET PUSH:", str(sync_error))
 
     except Exception as e:
         conn.rollback()
