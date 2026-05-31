@@ -94,3 +94,18 @@ def archive_eticket_data(token: str):
     ticket["updated_at"] = get_current_timestamp()
 
     return ticket
+
+
+def restore_eticket_data(token: str):
+    ticket = get_eticket_by_token_data(token)
+
+    if not ticket:
+        return None
+
+    ticket["status"] = "pending"
+    ticket["signed_at"] = None
+    ticket["ticket_acceptance"] = None
+    ticket["rejection_reason"] = None
+    ticket["updated_at"] = get_current_timestamp()
+
+    return ticket

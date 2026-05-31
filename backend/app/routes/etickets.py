@@ -6,6 +6,7 @@ from app.services.eticket_service import (
     create_eticket_data,
     get_eticket_by_token_data,
     get_etickets_data,
+    restore_eticket_data,
     update_eticket_status_data,
 )
 
@@ -48,6 +49,16 @@ def update_eticket_status(token: str, payload: ETicketStatusUpdate):
 @router.patch("/{token}/archive", response_model=ETicket)
 def archive_eticket(token: str):
     ticket = archive_eticket_data(token)
+
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+
+    return ticket
+
+
+@router.patch("/{token}/restore", response_model=ETicket)
+def restore_eticket(token: str):
+    ticket = restore_eticket_data(token)
 
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")
