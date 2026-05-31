@@ -109,3 +109,30 @@ def restore_eticket_data(token: str):
     ticket["updated_at"] = get_current_timestamp()
 
     return ticket
+
+
+def delete_archived_eticket_data(token: str):
+    ticket = get_eticket_by_token_data(token)
+
+    if not ticket:
+        return {
+            "deleted": False,
+            "status_code": 404,
+            "message": "Ticket not found",
+        }
+
+    if ticket["status"] != "archived":
+        return {
+            "deleted": False,
+            "status_code": 400,
+            "message": "Only archived tickets can be deleted",
+        }
+
+    TICKETS.remove(ticket)
+
+    return {
+        "deleted": True,
+        "status_code": 200,
+        "message": "Ticket deleted",
+        "token": token,
+    }

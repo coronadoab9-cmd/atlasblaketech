@@ -4,6 +4,7 @@ from app.schemas.eticket import ETicket, ETicketCreate, ETicketStatusUpdate
 from app.services.eticket_service import (
     archive_eticket_data,
     create_eticket_data,
+    delete_archived_eticket_data,
     get_eticket_by_token_data,
     get_etickets_data,
     restore_eticket_data,
@@ -64,3 +65,16 @@ def restore_eticket(token: str):
         raise HTTPException(status_code=404, detail="Ticket not found")
 
     return ticket
+
+
+@router.delete("/{token}")
+def delete_eticket(token: str):
+    result = delete_archived_eticket_data(token)
+
+    if not result["deleted"]:
+        raise HTTPException(
+            status_code=result["status_code"],
+            detail=result["message"],
+        )
+
+    return result
