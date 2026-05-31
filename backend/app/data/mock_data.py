@@ -473,3 +473,36 @@ AI_INSIGHTS = [
         "created_at": "Today, 4:00 PM",
     },
 ]
+
+ETICKET_ACTIVITY = [
+    {
+        "id": "activity-ticket-1001-created",
+        "company_id": "btc",
+        "ticket_token": "sample-ticket-1001",
+        "ticket_number": "1001",
+        "action": "created",
+        "message": "Ticket 1001 was created.",
+        "actor_name": "System",
+        "created_at": "2026-01-01T00:00:00Z",
+    },
+    {
+        "id": "activity-ticket-1002-created",
+        "company_id": "btc",
+        "ticket_token": "sample-ticket-1002",
+        "ticket_number": "1002",
+        "action": "created",
+        "message": "Ticket 1002 was created.",
+        "actor_name": "System",
+        "created_at": "2026-01-01T00:00:00Z",
+    },
+    {
+        "id": "activity-ticket-1003-created",
+        "company_id": "btc",
+        "ticket_token": "sample-ticket-1003",
+        "ticket_number": "1003",
+        "action": "created",
+        "message": "Ticket 1003 was created.",
+        "actor_name": "System",
+        "created_at": "2026-01-01T00:00:00Z",
+    },
+]

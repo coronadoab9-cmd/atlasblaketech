@@ -52,6 +52,17 @@ class ETicketStats(BaseModel):
     archived: int
 
 
+class ETicketActivity(BaseModel):
+    id: str
+    company_id: str
+    ticket_token: str
+    ticket_number: str
+    action: str
+    message: str
+    actor_name: str
+    created_at: str
+
+
 class ETicket(ETicketBase):
     id: int
     token: str
