@@ -1,16 +1,16 @@
 from fastapi import APIRouter
 
-from app.data.mock_data import REPORTS, REPORT_STATS
 from app.schemas.reports import ReportRow, ReportStats
+from app.services.report_service import get_report_stats_data, get_reports_data
 
 router = APIRouter(prefix="/reports", tags=["Reports"])
 
 
 @router.get("/stats", response_model=ReportStats)
 def get_report_stats():
-    return REPORT_STATS
+    return get_report_stats_data()
 
 
 @router.get("", response_model=list[ReportRow])
 def get_reports():
-    return REPORTS
+    return get_reports_data()
