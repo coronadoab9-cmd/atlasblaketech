@@ -82,3 +82,15 @@ def update_eticket_status_data(token: str, payload: dict):
         ticket["rejection_reason"] = payload.get("rejection_reason") or ticket.get("rejection_reason")
 
     return ticket
+
+
+def archive_eticket_data(token: str):
+    ticket = get_eticket_by_token_data(token)
+
+    if not ticket:
+        return None
+
+    ticket["status"] = "archived"
+    ticket["updated_at"] = get_current_timestamp()
+
+    return ticket
