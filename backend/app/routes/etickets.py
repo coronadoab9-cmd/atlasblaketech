@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException, Query
 
-from app.schemas.eticket import ETicket, ETicketCreate
+from app.schemas.eticket import ETicket, ETicketCreate, ETicketStatusUpdate
 from app.services.eticket_service import (
     create_eticket_data,
     get_eticket_by_token_data,
     get_etickets_data,
+    update_eticket_status_data,
 )
 
 router = APIRouter(prefix="/etickets", tags=["eTickets"])
@@ -26,6 +27,16 @@ def create_eticket(payload: ETicketCreate):
 @router.get("/{token}", response_model=ETicket)
 def get_eticket_by_token(token: str):
     ticket = get_eticket_by_token_data(token)
+
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+
+    return ticket
+
+
+@router.patch("/{token}/status", response_model=ETicket)
+def update_eticket_status(token: str, payload: ETicketStatusUpdate):
+    ticket = update_eticket_status_data(token, payload.model_dump())
 
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")

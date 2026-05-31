@@ -1,5 +1,8 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Literal, Optional
+
+
+ETicketStatus = Literal["pending", "signed", "rejected", "archived"]
 
 
 class ETicketBase(BaseModel):
@@ -20,7 +23,7 @@ class ETicketBase(BaseModel):
     quantity: float
     delivered_qty_total: float
     order_total: float
-    status: str = "pending"
+    status: ETicketStatus = "pending"
     load_time: str
     signed_at: Optional[str] = None
     water_allowed: float = 0
@@ -32,6 +35,13 @@ class ETicketBase(BaseModel):
 
 class ETicketCreate(ETicketBase):
     pass
+
+
+class ETicketStatusUpdate(BaseModel):
+    status: ETicketStatus
+    ticket_acceptance: Optional[str] = None
+    rejection_reason: Optional[str] = None
+    signed_at: Optional[str] = None
 
 
 class ETicket(ETicketBase):
