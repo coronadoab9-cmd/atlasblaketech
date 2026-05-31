@@ -2,10 +2,8 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 
-class ETicket(BaseModel):
-    id: int
-    company_id: str
-    token: str
+class ETicketBase(BaseModel):
+    company_id: str = "btc"
     ticket_number: str
     customer_name: str
     customer_email: EmailStr
@@ -16,19 +14,28 @@ class ETicket(BaseModel):
     truck_number: str
     driver_id: Optional[int] = None
     driver_name: Optional[str] = None
-    product: str
+    product: str = "Concrete"
     mix_number: str
     mix_description: str
     quantity: float
     delivered_qty_total: float
     order_total: float
-    status: str
+    status: str = "pending"
     load_time: str
     signed_at: Optional[str] = None
-    water_allowed: float
-    qc_water_added: float
-    customer_water_added: float
+    water_allowed: float = 0
+    qc_water_added: float = 0
+    customer_water_added: float = 0
     ticket_acceptance: Optional[str] = None
     rejection_reason: Optional[str] = None
+
+
+class ETicketCreate(ETicketBase):
+    pass
+
+
+class ETicket(ETicketBase):
+    id: int
+    token: str
     created_at: str
     updated_at: str
