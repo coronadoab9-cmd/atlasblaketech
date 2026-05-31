@@ -1,11 +1,12 @@
 from fastapi import APIRouter, HTTPException, Query
 
-from app.schemas.eticket import ETicket, ETicketCreate, ETicketStatusUpdate
+from app.schemas.eticket import ETicket, ETicketCreate, ETicketStats, ETicketStatusUpdate
 from app.services.eticket_service import (
     archive_eticket_data,
     create_eticket_data,
     delete_archived_eticket_data,
     get_eticket_by_token_data,
+    get_eticket_stats_data,
     get_etickets_data,
     restore_eticket_data,
     update_eticket_status_data,
@@ -25,6 +26,11 @@ def get_etickets(
 @router.post("", response_model=ETicket, status_code=201)
 def create_eticket(payload: ETicketCreate):
     return create_eticket_data(payload.model_dump())
+
+
+@router.get("/stats", response_model=ETicketStats)
+def get_eticket_stats():
+    return get_eticket_stats_data()
 
 
 @router.get("/{token}", response_model=ETicket)

@@ -44,6 +44,14 @@ class ETicketStatusUpdate(BaseModel):
     signed_at: Optional[str] = None
 
 
+class ETicketStats(BaseModel):
+    total: int
+    pending: int
+    signed: int
+    rejected: int
+    archived: int
+
+
 class ETicket(ETicketBase):
     id: int
     token: str

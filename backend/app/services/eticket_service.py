@@ -28,6 +28,16 @@ def get_etickets_data(status: str | None = None, truck_number: str | None = None
     return tickets
 
 
+def get_eticket_stats_data():
+    return {
+        "total": len(TICKETS),
+        "pending": len([ticket for ticket in TICKETS if ticket["status"] == "pending"]),
+        "signed": len([ticket for ticket in TICKETS if ticket["status"] == "signed"]),
+        "rejected": len([ticket for ticket in TICKETS if ticket["status"] == "rejected"]),
+        "archived": len([ticket for ticket in TICKETS if ticket["status"] == "archived"]),
+    }
+
+
 def get_eticket_by_token_data(token: str):
     return next((ticket for ticket in TICKETS if ticket["token"] == token), None)
 
