@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 from app.schemas.fleet import Device, Driver, FleetDashboardStats, Truck
 from app.services.fleet_service import (
@@ -17,15 +17,15 @@ def get_fleet_stats():
 
 
 @router.get("/trucks", response_model=list[Truck])
-def get_trucks():
-    return get_trucks_data()
+def get_trucks(status: str | None = Query(default=None)):
+    return get_trucks_data(status=status)
 
 
 @router.get("/drivers", response_model=list[Driver])
-def get_drivers():
-    return get_drivers_data()
+def get_drivers(active: bool | None = Query(default=None)):
+    return get_drivers_data(active=active)
 
 
 @router.get("/devices", response_model=list[Device])
-def get_devices():
-    return get_devices_data()
+def get_devices(active: bool | None = Query(default=None)):
+    return get_devices_data(active=active)

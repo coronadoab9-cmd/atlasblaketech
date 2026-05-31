@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 from app.schemas.dispatch import DispatchLoad, DispatchStats
 from app.services.dispatch_service import (
@@ -15,5 +15,8 @@ def get_dispatch_stats():
 
 
 @router.get("/loads", response_model=list[DispatchLoad])
-def get_dispatch_loads():
-    return get_dispatch_loads_data()
+def get_dispatch_loads(
+    status: str | None = Query(default=None),
+    truck_number: str | None = Query(default=None),
+):
+    return get_dispatch_loads_data(status=status, truck_number=truck_number)
