@@ -1,93 +1,10 @@
-import Navbar from "../components/Navbar";
+import type { Metadata } from "next";
+import Link from "next/link";
 import Footer from "../components/Footer";
+import { Icon } from "../components/Icons";
+import Navbar from "../components/Navbar";
+import PageHero from "../components/PageHero";
 
-export default function SupportPage() {
-  return (
-    <main className="min-h-screen bg-[#020817] text-[#F8FAFC]">
-      <Navbar />
-
-      <section className="px-6 py-28 border-b border-[#12315F] bg-[#030B1C]">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-[#005BFF] font-semibold mb-4">
-            Support
-          </p>
-
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight max-w-5xl mb-8">
-            Support for dispatch, delivery, and operational workflows.
-          </h1>
-
-          <p className="text-[#B6C2D1] text-xl leading-9 max-w-3xl">
-            AtlasBlake Technologies is building a platform focused on helping
-            operations teams manage dispatch, digital tickets, reporting, and
-            delivery visibility more efficiently.
-          </p>
-        </div>
-      </section>
-
-      <section className="px-6 py-24">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
-
-          <SupportCard
-            title="Demo Assistance"
-            text="Questions about platform capabilities, operational workflows, or future modules can be discussed during a product walkthrough."
-          />
-
-          <SupportCard
-            title="Future Onboarding"
-            text="Future customers will receive onboarding support for dispatch workflows, tickets, users, reporting, and company setup."
-          />
-
-          <SupportCard
-            title="Platform Questions"
-            text="AtlasBlake Technologies will support operational teams using dispatch, eTicket, reporting, and workflow modules."
-          />
-
-        </div>
-      </section>
-
-      <section className="px-6 py-24 border-t border-[#12315F] bg-[#030B1C]">
-        <div className="max-w-5xl mx-auto text-center">
-
-          <p className="text-[#005BFF] font-semibold mb-4">
-            Future Support Model
-          </p>
-
-          <h2 className="text-5xl font-bold leading-tight mb-8">
-            Built to support company-specific operational systems.
-          </h2>
-
-          <p className="text-[#B6C2D1] text-xl leading-9">
-            Future support workflows will include company accounts,
-            role-based users, module access, onboarding assistance,
-            and operational software guidance.
-          </p>
-
-        </div>
-      </section>
-
-      <Footer />
-    </main>
-  );
-}
-
-function SupportCard({
-  title,
-  text,
-}: {
-  title: string;
-  text: string;
-}) {
-  return (
-    <div className="bg-[#071225] border border-[#12315F] rounded-3xl p-8 hover:border-[#005BFF] transition">
-      <div className="w-14 h-14 rounded-2xl bg-[#005BFF]/10 border border-[#005BFF]/30 mb-6" />
-
-      <h2 className="text-2xl font-bold mb-4">
-        {title}
-      </h2>
-
-      <p className="text-[#B6C2D1] leading-8">
-        {text}
-      </p>
-    </div>
-  );
-}
+export const metadata: Metadata = { title: "Support", description: "Support information for AtlasBlake Technologies websites, software, portals, applications, and connected systems.", alternates: { canonical: "/support" } };
+export default function SupportPage(){return <main><Navbar/><PageHero eyebrow="Client support" title="Help for the systems your business relies on." text="Existing AtlasBlake clients can use the support email below for access questions, technical issues, change requests, and system assistance."/>
+<section className="bg-white px-6 py-24 md:py-32"><div className="mx-auto max-w-7xl"><div className="grid gap-6 md:grid-cols-3">{[["mail","Contact support","Email support@atlasblaketech.com with the company name, affected system, and a clear description of the issue."],["clock","Include timing","Tell us when the issue began, whether it is still happening, and whether work is currently blocked."],["layers","Share useful details","Screenshots, affected page names, ticket numbers, user roles, and exact error messages help narrow the problem quickly."]].map(([icon,title,text])=><div key={title} className="marketing-card p-7"><Icon name={icon as "mail"} className="h-7 w-7 text-[#1265df]"/><h2 className="mt-5 text-2xl font-extrabold">{title}</h2><p className="mt-4 leading-7 text-[#607991]">{text}</p></div>)}</div><div className="mt-12 rounded-[30px] bg-[#06172d] p-8 text-white md:p-12"><div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]"><div><p className="text-xs font-extrabold uppercase tracking-[.2em] text-blue-300">Existing client?</p><h2 className="mt-4 text-3xl font-extrabold md:text-4xl">Send the support details directly.</h2><p className="mt-4 max-w-3xl leading-7 text-slate-300">For security, do not include passwords, private API keys, access tokens, or full payment information in an email.</p></div><a href="mailto:support@atlasblaketech.com" className="button-primary">Email Support<Icon name="arrow" className="h-5 w-5"/></a></div></div><p className="mt-10 text-center text-sm text-[#6b8299]">Planning a new project instead? <Link className="font-extrabold text-[#1265df]" href="/contact">Start a project inquiry.</Link></p></div></section><Footer/></main>}

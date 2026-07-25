@@ -1,101 +1,89 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import Brand from "./Brand";
+import { Icon } from "./Icons";
+
+const links = [
+  { name: "Services", href: "/services" },
+  { name: "Work", href: "/work" },
+  { name: "Products", href: "/products" },
+  { name: "About", href: "/about" },
+  { name: "Contact", href: "/contact" },
+];
 
 export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const links = [
-    { name: "Home", href: "/" },
-    { name: "Product", href: "/product" },
-    { name: "Features", href: "/features" },
-    { name: "Pricing", href: "/pricing" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
-    { name: "Login", href: "/login" },
-  ];
+  useEffect(() => setMenuOpen(false), [pathname]);
+
+  function isActive(href: string) {
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
 
   return (
-    <nav className="w-full border-b border-[#12315F] bg-[#020817]/95 backdrop-blur-xl sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 h-28 flex items-center justify-between">
-        <a href="/" className="flex items-center">
-          <img
-            src="/logo.png"
-            alt="AtlasBlake Technologies"
-            className="h-20 w-auto object-contain"
-          />
-        </a>
+    <header className="sticky top-0 z-50 border-b border-[#dce7f2]/90 bg-white/90 backdrop-blur-xl">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 md:px-6">
+        <Brand />
 
-        <div className="hidden md:flex items-center gap-8 text-[#F8FAFC] font-medium">
-          {links.map((link) => {
-            const active = pathname === link.href;
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
+                isActive(link.href)
+                  ? "bg-[#edf5ff] text-[#0b62d6]"
+                  : "text-[#405a75] hover:bg-[#f4f8fc] hover:text-[#071a33]"
+              }`}
+            >
+              {link.name}
+            </Link>
+          ))}
+        </nav>
 
-            return (
-              <a
-                key={link.href}
-                href={link.href}
-                className={`transition pb-2 ${
-                  active
-                    ? "text-[#005BFF] border-b-2 border-[#005BFF]"
-                    : "hover:text-[#005BFF]"
-                }`}
-              >
-                {link.name}
-              </a>
-            );
-          })}
+        <div className="hidden items-center gap-3 lg:flex">
+          <Link href="/login" className="px-3 py-3 text-sm font-bold text-[#405a75] transition hover:text-[#0b62d6]">
+            Client Login
+          </Link>
+          <Link href="/contact" className="button-primary button-compact">
+            Start a Project<Icon name="arrow" className="h-4 w-4" />
+          </Link>
         </div>
 
-        <a
-          href="/demo"
-          className="hidden md:flex bg-[#005BFF] hover:bg-[#0047cc] px-7 py-4 rounded-xl font-bold transition shadow-[0_0_30px_rgba(0,91,255,0.45)]"
-        >
-          Book Demo →
-        </a>
-
         <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden flex flex-col gap-1"
+          type="button"
+          className="grid h-11 w-11 place-items-center rounded-xl border border-[#dce7f2] text-[#071a33] lg:hidden"
+          aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
         >
-          <span className="w-7 h-[3px] bg-white rounded-full" />
-          <span className="w-7 h-[3px] bg-white rounded-full" />
-          <span className="w-7 h-[3px] bg-white rounded-full" />
+          <Icon name={menuOpen ? "close" : "menu"} className="h-6 w-6" />
         </button>
       </div>
 
-      {menuOpen && (
-        <div className="md:hidden border-t border-[#12315F] bg-[#071225]">
-          <div className="flex flex-col px-6 py-6 gap-6">
-            {links.map((link) => {
-              const active = pathname === link.href;
-
-              return (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={`text-lg transition ${
-                    active
-                      ? "text-[#005BFF]"
-                      : "text-white hover:text-[#005BFF]"
-                  }`}
-                >
-                  {link.name}
-                </a>
-              );
-            })}
-
-            <a
-              href="/demo"
-              className="bg-[#005BFF] hover:bg-[#0047cc] transition px-6 py-4 rounded-xl font-bold text-center"
-            >
-              Book Demo →
-            </a>
-          </div>
+      {menuOpen ? (
+        <div className="border-t border-[#dce7f2] bg-white px-5 py-5 shadow-xl lg:hidden">
+          <nav className="mx-auto flex max-w-7xl flex-col gap-2" aria-label="Mobile navigation">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`rounded-xl px-4 py-3 text-base font-bold ${isActive(link.href) ? "bg-[#edf5ff] text-[#0b62d6]" : "text-[#29445f]"}`}
+              >
+                {link.name}
+              </Link>
+            ))}
+            <div className="mt-3 grid gap-3 border-t border-[#e5edf5] pt-4 sm:grid-cols-2">
+              <Link href="/login" className="button-secondary justify-center">Client Login</Link>
+              <Link href="/contact" className="button-primary justify-center">Start a Project<Icon name="arrow" className="h-5 w-5" /></Link>
+            </div>
+          </nav>
         </div>
-      )}
-    </nav>
+      ) : null}
+    </header>
   );
 }

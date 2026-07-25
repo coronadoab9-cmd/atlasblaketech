@@ -1,21 +1,96 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #020817;
-  --navy: #071225;
-  --navy-light: #0b1730;
-  --blue: #005bff;
-  --blue-soft: #0a66ff;
-  --border: #12315f;
-  --text: #f8fafc;
-  --muted: #b6c2d1;
+  --ink: #071a33;
+  --ink-soft: #16324f;
+  --blue: #1265df;
+  --blue-dark: #0a50b8;
+  --muted: #55708d;
+  --line: #dce7f2;
+  --surface: #f5f8fc;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
-  background: var(--bg);
-  color: var(--text);
+  margin: 0;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: Inter, Geist, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: #cfe2ff; color: #071a33; }
+a { text-decoration: none; }
+button, input, select, textarea { font: inherit; }
+
+.hero-grid {
+  background-image: linear-gradient(rgba(10,80,184,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(10,80,184,.055) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: linear-gradient(to bottom, black, transparent 90%);
+}
+.hero-grid-dark {
+  background-image: linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: linear-gradient(to bottom, black, transparent 92%);
+}
+.text-balance { text-wrap: balance; }
+
+.button-primary,
+.button-secondary,
+.button-dark-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  border-radius: .9rem;
+  padding: .95rem 1.3rem;
+  font-size: .95rem;
+  font-weight: 800;
+  line-height: 1;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease, color .2s ease;
+}
+.button-primary {
+  border: 1px solid #1265df;
+  background: linear-gradient(135deg, #1265df, #0b54bd);
+  color: white;
+  box-shadow: 0 12px 28px rgba(18,101,223,.24);
+}
+.button-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 36px rgba(18,101,223,.32); }
+.button-compact { padding: .78rem 1.08rem; }
+.button-primary-light { background: white; border-color: white; color: #0a50b8; box-shadow: 0 12px 30px rgba(0,0,0,.16); }
+.button-secondary { border: 1px solid #cbd9e7; background: rgba(255,255,255,.78); color: #16324f; }
+.button-secondary:hover { transform: translateY(-2px); border-color: #91b7e9; background: white; }
+.button-dark-outline { border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.04); color: white; }
+.button-dark-outline:hover { transform: translateY(-2px); border-color: rgba(255,255,255,.45); background: rgba(255,255,255,.08); }
+
+.form-control {
+  width: 100%;
+  border: 1px solid #cfdeec;
+  border-radius: .9rem;
+  background: #f9fbfd;
+  padding: .9rem 1rem;
+  color: #071a33;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.form-control:focus { border-color: #1265df; background: #fff; box-shadow: 0 0 0 4px rgba(18,101,223,.1); }
+.form-control::placeholder { color: #8ca0b4; }
+
+.marketing-card {
+  border: 1px solid #dce7f2;
+  border-radius: 1.5rem;
+  background: white;
+  box-shadow: 0 16px 50px rgba(23,62,103,.08);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.marketing-card:hover { transform: translateY(-5px); border-color: #b8d2ef; box-shadow: 0 24px 70px rgba(23,62,103,.13); }
+
+@keyframes float-card { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-10px) rotate(-1deg); } }
+@keyframes float-card-alt { 0%,100% { transform: translateY(0) rotate(1deg); } 50% { transform: translateY(8px) rotate(1deg); } }
+.float-card { animation: float-card 6s ease-in-out infinite; }
+.float-card-alt { animation: float-card-alt 7s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .float-card, .float-card-alt { animation: none; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }

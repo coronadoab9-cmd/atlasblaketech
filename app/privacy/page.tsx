@@ -1,85 +1,17 @@
-import Navbar from "../components/Navbar";
+import type { Metadata } from "next";
 import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import PageHero from "../components/PageHero";
 
-export default function PrivacyPage() {
-  return (
-    <main className="min-h-screen bg-[#020817] text-[#F8FAFC]">
-      <Navbar />
-
-      <section className="px-6 py-28 border-b border-[#12315F] bg-[#030B1C]">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-[#005BFF] font-semibold mb-4">
-            Privacy Policy
-          </p>
-
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-8">
-            Privacy & data handling.
-          </h1>
-
-          <p className="text-[#B6C2D1] text-xl leading-9">
-            AtlasBlake Technologies is committed to protecting customer,
-            operational, and company information.
-          </p>
-        </div>
-      </section>
-
-      <section className="px-6 py-24">
-        <div className="max-w-5xl mx-auto space-y-16">
-
-          <PolicySection
-            title="Information Collection"
-            text="AtlasBlake Technologies may collect contact details, company information, operational workflow information, and platform usage details submitted through the website or future software platform."
-          />
-
-          <PolicySection
-            title="Operational Data"
-            text="Future platform customers may store dispatch records, eTickets, delivery information, customer records, reporting data, and operational workflows inside company-specific environments."
-          />
-
-          <PolicySection
-            title="Company-Specific Access"
-            text="Future software architecture is intended to separate operational data by company account so customers only access their own information."
-          />
-
-          <PolicySection
-            title="Security"
-            text="AtlasBlake Technologies intends to implement authentication, role-based permissions, secure hosting, and protected operational workflows for future customer platforms."
-          />
-
-          <PolicySection
-            title="Third-Party Services"
-            text="Future platform services may use infrastructure providers, hosting providers, analytics systems, authentication services, payment systems, and operational integrations when necessary."
-          />
-
-          <PolicySection
-            title="Policy Updates"
-            text="This privacy policy may change as the AtlasBlake Technologies platform, services, and operational systems evolve."
-          />
-
-        </div>
-      </section>
-
-      <Footer />
-    </main>
-  );
-}
-
-function PolicySection({
-  title,
-  text,
-}: {
-  title: string;
-  text: string;
-}) {
-  return (
-    <div className="bg-[#071225] border border-[#12315F] rounded-[32px] p-10">
-      <h2 className="text-3xl font-bold mb-5">
-        {title}
-      </h2>
-
-      <p className="text-[#B6C2D1] text-lg leading-9">
-        {text}
-      </p>
-    </div>
-  );
-}
+export const metadata: Metadata = { title: "Privacy Policy", description: "Privacy information for the AtlasBlake Technologies website and project inquiry process.", alternates: { canonical: "/privacy" } };
+export default function PrivacyPage(){return <main><Navbar/><PageHero eyebrow="Legal" title="Privacy Policy" text="This page explains the general information AtlasBlake Technologies may receive through its public website and project communications."/><LegalBody sections={[
+["Information you provide","AtlasBlake may receive information you voluntarily provide through email or project inquiries, including your name, company, email address, phone number, project needs, and related communications."],
+["Website and technical information","Hosting, security, and analytics providers may process limited technical information such as browser type, device information, approximate location, referring pages, requested pages, timestamps, and IP address."],
+["How information may be used","Information may be used to respond to inquiries, plan and deliver services, support client systems, maintain website security, understand site performance, comply with legal obligations, and improve AtlasBlake products and services."],
+["Service providers","AtlasBlake may use cloud hosting, email, analytics, security, and development service providers. These providers may process information only as necessary to deliver their services."],
+["Client systems","Custom software and client platforms may have additional privacy, access, retention, and data-processing terms defined by the applicable agreement and the client’s own policies."],
+["Data security","Reasonable administrative and technical safeguards are used, but no online service or method of electronic storage can be guaranteed completely secure."],
+["Your choices","You may request correction or deletion of information you previously supplied, subject to contractual, security, recordkeeping, and legal requirements."],
+["Contact","Privacy questions can be sent to contact@atlasblaketech.com."],
+]} updated="July 25, 2026"/><Footer/></main>}
+function LegalBody({sections,updated}:{sections:string[][];updated:string}){return <section className="bg-white px-6 py-20"><div className="mx-auto max-w-4xl"><p className="mb-10 text-sm font-bold text-[#71879d]">Last updated: {updated}</p><div className="space-y-10">{sections.map(([title,text])=><div key={title}><h2 className="text-2xl font-extrabold text-[#071a33]">{title}</h2><p className="mt-4 leading-8 text-[#5d7790]">{text}</p></div>)}</div></div></section>}
