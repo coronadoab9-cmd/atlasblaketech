@@ -13,7 +13,7 @@ export default function SectionHeading({
 }) {
   return (
     <div className={`${align === "center" ? "mx-auto text-center" : ""} max-w-3xl`}>
-      <p className={`mb-4 text-sm font-extrabold uppercase tracking-[0.24em] ${inverse ? "text-blue-300" : "text-[#1265df]"}`}>
+      <p className={`mb-4 text-sm font-extrabold uppercase tracking-[0.24em] ${inverse ? "text-blue-300" : "text-[#2563eb]"}`}>
         {eyebrow}
       </p>
       <h2 className={`text-balance text-4xl font-extrabold leading-[1.08] tracking-[-0.045em] md:text-6xl ${inverse ? "text-white" : "text-[#071a33]"}`}>

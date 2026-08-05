@@ -5,19 +5,19 @@ import { site } from "./lib/marketing";
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "AtlasBlake Technologies | Custom Software, Websites & Automation",
+    default: "AtlasBlake Technologies | Professional Websites & Business Technology",
     template: "%s | AtlasBlake Technologies",
   },
   description: site.description,
   applicationName: site.name,
   keywords: [
-    "custom software development",
-    "website development",
-    "mobile application development",
+    "professional website design",
+    "small business website design",
+    "local SEO website",
+    "website maintenance",
+    "custom business software",
     "business automation",
-    "API integration",
-    "customer portals",
-    "Dallas Fort Worth software company",
+    "Dallas Fort Worth web design",
   ],
   authors: [{ name: site.name }],
   creator: site.name,
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: site.url,
     siteName: site.name,
-    title: "AtlasBlake Technologies | Custom Software, Websites & Automation",
+    title: "AtlasBlake Technologies | Professional Websites & Business Technology",
     description: site.description,
   },
   twitter: {
@@ -37,8 +37,8 @@ export const metadata: Metadata = {
     description: site.description,
   },
   icons: {
-    icon: "/icon.png",
-    apple: "/apple-icon.png",
+    icon: "/brand-icon.png",
+    apple: "/brand-icon.png",
   },
 };
 

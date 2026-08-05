@@ -3,11 +3,9 @@ import { site } from "./lib/marketing";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/dashboard", "/portal", "/eticket", "/login"],
-    },
+    rules: [
+      { userAgent: "*", allow: "/", disallow: ["/dashboard", "/portal", "/login", "/eticket"] },
+    ],
     sitemap: `${site.url}/sitemap.xml`,
     host: site.url,
   };

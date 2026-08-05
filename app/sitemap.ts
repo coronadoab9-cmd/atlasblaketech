@@ -2,27 +2,12 @@ import type { MetadataRoute } from "next";
 import { services, site } from "./lib/marketing";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = [
-    "",
-    "/services",
-    "/work",
-    "/work/big-town-concrete",
-    "/work/materiory",
-    "/work/websites",
-    "/products",
-    "/products/btc-fleet",
-    "/products/materiory",
-    "/about",
-    "/contact",
-    "/support",
-    "/privacy",
-    "/terms",
-  ];
+  const routes = ["", "/services", "/work", "/work/nexdrain-plumbing", "/pricing", "/about", "/start-a-project", "/privacy", "/terms", "/support"];
   const serviceRoutes = services.map((service) => `/services/${service.slug}`);
-  return [...staticRoutes, ...serviceRoutes].map((route, index) => ({
+  return [...routes, ...serviceRoutes].map((route) => ({
     url: `${site.url}${route}`,
     lastModified: new Date(),
-    changeFrequency: index === 0 ? "weekly" : "monthly",
-    priority: index === 0 ? 1 : route === "/contact" ? 0.9 : 0.8,
+    changeFrequency: route === "" ? "weekly" : "monthly",
+    priority: route === "" ? 1 : route.startsWith("/services") || route === "/pricing" || route.startsWith("/work") ? 0.8 : 0.6,
   }));
 }
