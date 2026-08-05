@@ -2,8 +2,8 @@ export const site = {
   name: "AtlasBlake Technologies LLC",
   shortName: "AtlasBlake",
   url: "https://atlasblaketech.com",
-  email: "contact@atlasblaketech.com",
-  supportEmail: "support@atlasblaketech.com",
+  email: "coronadoab9@gmail.com",
+  supportEmail: "coronadoab9@gmail.com",
   location: "Dallas–Fort Worth, Texas",
   description:
     "AtlasBlake Technologies creates professional websites, local SEO foundations, managed website care, automation, and custom business technology with clear scope and fair pricing.",

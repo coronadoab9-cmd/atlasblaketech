@@ -12,6 +12,6 @@ export default function PrivacyPage(){return <main><Navbar/><PageHero eyebrow="L
 ["Client systems","Custom software and client platforms may have additional privacy, access, retention, and data-processing terms defined by the applicable agreement and the client’s own policies."],
 ["Data security","Reasonable administrative and technical safeguards are used, but no online service or method of electronic storage can be guaranteed completely secure."],
 ["Your choices","You may request correction or deletion of information you previously supplied, subject to contractual, security, recordkeeping, and legal requirements."],
-["Contact","Privacy questions can be sent to contact@atlasblaketech.com."],
+["Contact","Privacy questions can be sent to coronadoab9@gmail.com."],
 ]} updated="August 4, 2026"/><Footer/></main>}
 function LegalBody({sections,updated}:{sections:string[][];updated:string}){return <section className="bg-white px-6 py-20"><div className="mx-auto max-w-4xl"><p className="mb-10 text-sm font-bold text-[#71879d]">Last updated: {updated}</p><div className="space-y-10">{sections.map(([title,text])=><div key={title}><h2 className="text-2xl font-extrabold text-[#071a33]">{title}</h2><p className="mt-4 leading-8 text-[#5d7790]">{text}</p></div>)}</div></div></section>}
