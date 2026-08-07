@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useState } from "react";
 import { Icon } from "./Icons";
@@ -14,9 +14,9 @@ const projectTypes = [
 ];
 
 const budgets = [
-  "Core Website — $3,000 + $150/month Core Care",
-  "Growth Website — $5,000 + $250/month Growth Care",
-  "Premium Website — $7,500+ + $400+/month Premium Care",
+  "Core Website â€” $3,000 + $150/month Core Care",
+  "Growth Website â€” $5,000 + $250/month Growth Care",
+  "Premium Website â€” $7,500+ + $400+/month Premium Care",
   "Custom technology or other written scope",
   "Not sure yet",
 ];
@@ -27,7 +27,7 @@ export default function ContactForm() {
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const subject = encodeURIComponent(`AtlasBlake project inquiry — ${String(form.get("company") || form.get("name") || "New project")}`);
+    const subject = encodeURIComponent(`AtlasBlake project inquiry â€” ${String(form.get("company") || form.get("name") || "New project")}`);
     const body = encodeURIComponent([
       `Name: ${form.get("name") || ""}`,
       `Company: ${form.get("company") || ""}`,
@@ -52,9 +52,9 @@ export default function ContactForm() {
         <Field label="Company" name="company" placeholder="Company name" />
         <Field label="Email" name="email" type="email" placeholder="you@company.com" required />
         <Field label="Phone" name="phone" type="tel" placeholder="(214) 555-0100" />
-        <div className="md:col-span-2"><Field label="Current website, if any" name="website" type="url" placeholder="https://yourcompany.com" /></div>
+        <div className="md:col-span-2"><Field label="Current website, if any" name="website" type="text" placeholder="https://yourcompany.com" /></div>
         <Select label="What would you like help with?" name="projectType" options={projectTypes} required />
-        <Field label="Preferred timeline" name="timeline" placeholder="Example: Standard 5–7 weeks or preferred launch date" />
+        <Field label="Preferred timeline" name="timeline" placeholder="Example: Standard 5â€“7 weeks or preferred launch date" />
         <div className="md:col-span-2"><Select label="Estimated investment" name="budget" options={budgets} /></div>
         <div className="md:col-span-2">
           <label className="mb-2 block text-sm font-extrabold text-[#16324f]" htmlFor="message">Tell us about your business and vision</label>
@@ -76,3 +76,4 @@ function Field({ label, name, type = "text", placeholder, required = false }: { 
 function Select({ label, name, options, required = false }: { label: string; name: string; options: string[]; required?: boolean }) {
   return <div><label className="mb-2 block text-sm font-extrabold text-[#16324f]" htmlFor={name}>{label}</label><select className="form-control" id={name} name={name} required={required}><option value="">Select an option</option>{options.map((option)=><option key={option} value={option}>{option}</option>)}</select></div>;
 }
+
