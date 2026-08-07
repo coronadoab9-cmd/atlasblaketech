@@ -12,5 +12,5 @@ export default function TermsPage(){return <main><Navbar/><PageHero eyebrow="Leg
 ["Third-party services","The website and AtlasBlake projects may rely on third-party hosting, APIs, software, platforms, and service providers. Their services are subject to their own terms, availability, and policies."],
 ["Availability and accuracy","AtlasBlake may update, suspend, remove, or change website content without notice. Reasonable efforts are made to keep public information useful, but the website is provided without a guarantee that every item is complete, current, or error-free."],
 ["Limitation","To the extent permitted by law, AtlasBlake is not responsible for indirect or consequential losses arising solely from use of, or inability to use, this public informational website."],
-["Contact","Questions about these terms can be sent to coronadoab9@gmail.com."],
+["Contact","Questions about these terms can be sent to contact@atlasblaketech.com."],
 ].map(([title,text])=><div key={title}><h2 className="text-2xl font-extrabold text-[#071a33]">{title}</h2><p className="mt-4 leading-8 text-[#5d7790]">{text}</p></div>)}</div></div></section><Footer/></main>}

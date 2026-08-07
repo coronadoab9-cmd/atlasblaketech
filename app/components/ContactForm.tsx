@@ -42,7 +42,7 @@ export default function ContactForm() {
       String(form.get("message") || ""),
     ].join("\n"));
     setSent(true);
-    window.location.href = `mailto:coronadoab9@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:contact@atlasblaketech.com?subject=${subject}&body=${body}`;
   }
 
   return (
