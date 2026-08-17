@@ -12,7 +12,7 @@ const serviceLinks = [
 
 const companyLinks = [
   ["Our Work", "/work"],
-  ["Pricing", "/pricing"],
+  ["Approach", "/approach"],
   ["About", "/about"],
   ["Start a Project", "/start-a-project"],
 ];
@@ -25,7 +25,7 @@ export default function Footer() {
           <div>
             <Brand inverse />
             <p className="mt-7 max-w-md text-base leading-7 text-slate-300">
-              Professional websites and practical technology designed around real business goals, clear scope, and fair pricing.
+              Professional websites and practical technology shaped around real business goals, clear scope, and budget-aware planning.
             </p>
             <p className="mt-5 text-sm font-bold text-blue-300">{site.location}</p>
           </div>

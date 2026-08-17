@@ -6,7 +6,7 @@ export const site = {
   supportEmail: "contact@atlasblaketech.com",
   location: "Dallas–Fort Worth, Texas",
   description:
-    "AtlasBlake Technologies creates professional websites, local SEO foundations, managed website care, automation, and custom business technology with clear scope and fair pricing.",
+    "AtlasBlake Technologies creates professional websites, local SEO foundations, managed website care, automation, and custom business technology with clear scope, honest guidance, and budget-aware planning.",
 };
 
 export const services = [
@@ -22,7 +22,7 @@ export const services = [
       "AtlasBlake plans, designs, builds, tests, and launches professional websites around your company, customers, services, branding, and goals—not a recycled industry template.",
     outcomes: [
       "Custom visual direction and reusable design system",
-      "Core, service, and priority city pages based on the selected package",
+      "Core, service, and priority city pages based on the agreed project scope",
       "Clear click-to-call, request-service, and lead-capture paths",
       "Mobile optimization and technical SEO foundation",
       "Google Analytics and Search Console baseline when included",
@@ -45,7 +45,7 @@ export const services = [
       "Localized content, FAQs, proof, and calls to action",
       "Business-name, phone, hours, licensing, and service-area consistency",
       "Google Analytics and Search Console measurement",
-      "Ongoing technical review through eligible care plans",
+      "Ongoing technical review when included in the selected care scope",
     ],
   },
   {
@@ -57,14 +57,14 @@ export const services = [
     summary:
       "Managed hosting, SSL, backups, security, updates, monitoring, minor edits, and dependable support after launch.",
     description:
-      "Core, Growth, and Premium websites are paired with corresponding month-to-month care plans. Care begins at launch, is billed monthly in advance, and may be canceled with 30 days’ written notice under the signed agreement.",
+      "Ongoing website care is matched to the size of the site, the level of support that is useful, and the written agreement. Care can include managed hosting, backups, security, updates, monitoring, minor changes, and growth support.",
     outcomes: [
       "AtlasBlake-managed hosting, SSL, and uptime monitoring",
       "Automated daily backups and routine compatible software updates",
       "Security, spam monitoring, and reasonable restoration assistance",
-      "Monthly minor-edit allowance based on the selected care tier",
-      "Technical SEO, performance, and conversion review at eligible tiers",
-      "Email support and priority support based on the selected care tier",
+      "Minor website changes based on the agreed care scope",
+      "Technical SEO, performance, and conversion review when included",
+      "Email support and priority support based on the agreed care scope",
     ],
   },
   {
@@ -111,9 +111,9 @@ export const websitePackages = [
   {
     name: "Core Website",
     option: "Option A",
-    setup: "$3,000",
+    setup: "Custom quote",
     careName: "Core Care",
-    monthly: "$150/month",
+    monthly: "Matched to the site",
     pages: "Up to 5 core/service pages",
     bestFor: "Businesses that need a professional, credible website foundation.",
     featured: false,
@@ -128,9 +128,9 @@ export const websitePackages = [
   {
     name: "Growth Website",
     option: "Recommended · Option B",
-    setup: "$5,000",
+    setup: "Custom quote",
     careName: "Growth Care",
-    monthly: "$250/month",
+    monthly: "Matched to the site",
     pages: "Up to 12 total pages",
     bestFor: "Local service businesses that want stronger content, trust, and local visibility.",
     featured: true,
@@ -145,9 +145,9 @@ export const websitePackages = [
   {
     name: "Premium Website",
     option: "Option C",
-    setup: "$7,500+",
+    setup: "Custom quote",
     careName: "Premium Care",
-    monthly: "$400+/month",
+    monthly: "Matched to the site",
     pages: "20+ page custom architecture",
     bestFor: "Established, growth-focused businesses competing across multiple services or cities.",
     featured: false,
@@ -165,7 +165,7 @@ export const carePlans = [
   {
     name: "Core Care",
     label: "Reliable essentials",
-    monthly: "$150/month",
+    monthly: "Matched to the site",
     featured: false,
     features: [
       "Managed hosting, SSL, and uptime monitoring",
@@ -178,7 +178,7 @@ export const carePlans = [
   {
     name: "Growth Care",
     label: "Active growth support",
-    monthly: "$250/month",
+    monthly: "Matched to the site",
     featured: true,
     features: [
       "Everything included in Core Care",
@@ -191,7 +191,7 @@ export const carePlans = [
   {
     name: "Premium Care",
     label: "Hands-on partnership",
-    monthly: "$400+/month",
+    monthly: "Matched to the site",
     featured: false,
     features: [
       "Everything included in Growth Care",
@@ -236,8 +236,8 @@ export const projectTerms = {
   revisions: "Two consolidated revision rounds",
   deposit: "50%",
   launchBalance: "50%",
-  additionalDevelopment: "$125/hour",
+  additionalDevelopment: "Quoted before work begins",
   cancellationNotice: "30 days’ written notice",
-  firstYearHandoff: "$2,500",
-  laterHandoff: "$750 after 12 consecutive months of Managed Hosting & Care",
+  firstYearHandoff: "Available by written quote",
+  laterHandoff: "Available by written quote",
 };

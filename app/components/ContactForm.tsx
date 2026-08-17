@@ -13,14 +13,6 @@ const projectTypes = [
   "Not sure yet",
 ];
 
-const budgets = [
-  "Core Website - $3,000 + $150/month Core Care",
-  "Growth Website - $5,000 + $250/month Growth Care",
-  "Premium Website - $7,500+ + $400+/month Premium Care",
-  "Custom technology or other written scope",
-  "Not sure yet",
-];
-
 type SubmitStatus = "idle" | "sending" | "success" | "error";
 
 export default function ContactForm() {
@@ -86,18 +78,9 @@ export default function ContactForm() {
       className="rounded-[30px] border border-[#dce7f2] bg-white p-6 shadow-[0_24px_70px_rgba(23,62,103,0.12)] md:p-9"
     >
       <div className="grid gap-5 md:grid-cols-2">
-        <Field
-          label="Name"
-          name="name"
-          placeholder="Your name"
-          required
-        />
+        <Field label="Name" name="name" placeholder="Your name" required />
 
-        <Field
-          label="Company"
-          name="company"
-          placeholder="Company name"
-        />
+        <Field label="Company" name="company" placeholder="Company name" />
 
         <Field
           label="Email"
@@ -137,10 +120,10 @@ export default function ContactForm() {
         />
 
         <div className="md:col-span-2">
-          <Select
-            label="Estimated investment"
+          <Field
+            label="Budget or investment goals (optional)"
             name="budget"
-            options={budgets}
+            placeholder="Share what feels comfortable, a range, or 'not sure yet'. We can shape the scope around it."
           />
         </div>
 
@@ -194,7 +177,8 @@ export default function ContactForm() {
 
       <p className="mt-4 text-sm leading-6 text-[#6d8299]">
         Tell us about your project and we will review the details and follow up directly.
-        No technical specification is required.
+        No technical specification is required, and you do not need to know the perfect
+        scope before reaching out.
       </p>
 
       {status === "success" ? (
@@ -206,7 +190,7 @@ export default function ContactForm() {
             Thank you - your project inquiry has been sent.
           </p>
           <p className="mt-1 text-sm text-emerald-700">
-            AtlasBlake will review your information and follow up with you directly.
+            AtlasBlake will review your goals and follow up with you directly.
           </p>
         </div>
       ) : null}
@@ -219,9 +203,7 @@ export default function ContactForm() {
           <p className="font-extrabold text-red-800">
             We could not send your inquiry.
           </p>
-          <p className="mt-1 text-sm text-red-700">
-            {errorMessage}
-          </p>
+          <p className="mt-1 text-sm text-red-700">{errorMessage}</p>
         </div>
       ) : null}
     </form>
@@ -289,7 +271,6 @@ function Select({
         required={required}
       >
         <option value="">Select an option</option>
-
         {options.map((option) => (
           <option key={option} value={option}>
             {option}

@@ -9,7 +9,7 @@ import { Icon } from "./Icons";
 const links = [
   { name: "Services", href: "/services" },
   { name: "Our Work", href: "/work" },
-  { name: "Pricing", href: "/pricing" },
+  { name: "Approach", href: "/approach" },
   { name: "About", href: "/about" },
 ];
 

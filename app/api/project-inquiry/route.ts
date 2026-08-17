@@ -103,7 +103,7 @@ export async function POST(request: Request) {
       `Current website: ${website || "Not provided"}`,
       `Project type: ${projectType}`,
       `Preferred timeline: ${timeline || "Not provided"}`,
-      `Estimated investment: ${budget || "Not provided"}`,
+      `Budget / investment goals: ${budget || "Not provided"}`,
       "",
       "BUSINESS AND PROJECT DETAILS",
       "",
@@ -135,7 +135,7 @@ export async function POST(request: Request) {
             ${row("Current website", website)}
             ${row("Project type", projectType)}
             ${row("Preferred timeline", timeline)}
-            ${row("Estimated investment", budget)}
+            ${row("Budget / investment goals", budget)}
           </table>
 
           <div style="padding:28px 32px;">

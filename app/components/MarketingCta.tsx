@@ -20,8 +20,13 @@ export default function MarketingCta({
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">{text}</p>
         </div>
         <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
-          <Link href="/start-a-project" className="button-primary button-primary-light justify-center">Start Your Project<Icon name="arrow" className="h-5 w-5" /></Link>
-          <Link href="/pricing" className="button-dark-outline justify-center">View Pricing</Link>
+          <Link href="/start-a-project" className="button-primary button-primary-light justify-center">
+            Start Your Project
+            <Icon name="arrow" className="h-5 w-5" />
+          </Link>
+          <Link href="/approach" className="button-dark-outline justify-center">
+            How We Work
+          </Link>
         </div>
       </div>
     </section>

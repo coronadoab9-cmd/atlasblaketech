@@ -7,7 +7,7 @@ import MarketingCta from "./components/MarketingCta";
 import Navbar from "./components/Navbar";
 import SectionHeading from "./components/SectionHeading";
 import WebsiteShowcase from "./components/WebsiteShowcase";
-import { processSteps, services, websitePackages } from "./lib/marketing";
+import { processSteps, services } from "./lib/marketing";
 
 export const metadata: Metadata = {
   title: "Professional Websites, Local SEO & Business Technology",
@@ -147,7 +147,7 @@ export default function HomePage() {
             {[
               ["users", "Direct communication", "Work with someone who listens to the goals and understands the decisions behind the project."],
               ["layers", "Built around the business", "The company’s identity, customers, services, and future plans guide the design."],
-              ["shield", "Fair, explained pricing", "Recommendations are based on what the business actually needs, with scope explained first."],
+              ["shield", "Flexible, thoughtful scope", "Recommendations are based on what the business actually needs, what matters most, and what makes sense for the available budget."],
               ["chart", "Room to grow", "Start with a professional website and add portals, automation, or software when the company is ready."],
             ].map(([icon, title, text]) => <div key={title} className="rounded-2xl border border-[#dce7f2] bg-white p-6 shadow-[0_12px_35px_rgba(23,62,103,.06)]"><span className="grid h-11 w-11 place-items-center rounded-xl bg-[#eaf3ff] text-[#2563eb]"><Icon name={icon as "layers"} className="h-5 w-5" /></span><h3 className="mt-5 text-xl font-black">{title}</h3><p className="mt-3 leading-7 text-[#607991]">{text}</p></div>)}
           </div>
@@ -156,14 +156,64 @@ export default function HomePage() {
 
       <section className="bg-white px-6 py-24 md:py-32">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-7 md:flex-row md:items-end md:justify-between">
-            <SectionHeading eyebrow="Website pricing" title="Clear options for different stages of growth." text="Every package includes a defined scope, professional design, mobile usability, launch support, and ongoing care." />
-            <Link href="/pricing" className="button-secondary shrink-0">Compare All Packages<Icon name="arrow" className="h-5 w-5" /></Link>
+          <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
+            <div>
+              <SectionHeading
+                eyebrow="A different approach"
+                title="Start with what your business needs - not a preset package."
+                text="Every business is in a different place. AtlasBlake starts by understanding the goal, the priorities, and what feels realistic before recommending a scope."
+              />
+
+              <Link href="/approach" className="button-primary mt-8">
+                See How We Work
+                <Icon name="arrow" className="h-5 w-5" />
+              </Link>
+            </div>
+
+            <div className="grid gap-5 md:grid-cols-3">
+              {[
+                {
+                  number: "01",
+                  title: "Start with the business",
+                  text: "We first learn what you are trying to accomplish, what is holding the business back, and what would make the biggest difference."
+                },
+                {
+                  number: "02",
+                  title: "Shape the scope to the budget",
+                  text: "You do not have to fit into a preset website package. We can prioritize the work around the goals and investment that make sense for your company."
+                },
+                {
+                  number: "03",
+                  title: "Build in practical stages",
+                  text: "If the entire vision does not need to happen at once, we can create a strong first phase and build on it as the business grows."
+                }
+              ].map((item) => (
+                <article
+                  key={item.number}
+                  className="rounded-[26px] border border-[#dce7f2] bg-[#f9fbfd] p-7"
+                >
+                  <p className="text-xs font-black tracking-[.2em] text-[#2563eb]">
+                    {item.number}
+                  </p>
+                  <h3 className="mt-5 text-2xl font-black tracking-[-.025em]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-4 text-sm leading-7 text-[#607991]">
+                    {item.text}
+                  </p>
+                </article>
+              ))}
+            </div>
           </div>
-          <div className="mt-14 grid gap-6 lg:grid-cols-3">
-            {websitePackages.map((pkg) => <article key={pkg.name} className={`relative rounded-[26px] border p-7 ${pkg.featured ? "border-[#2563eb] bg-[#071a33] text-white shadow-[0_24px_70px_rgba(7,26,51,.2)]" : "border-[#dce7f2] bg-[#f9fbfd]"}`}>{pkg.featured ? <span className="absolute right-5 top-5 rounded-full bg-[#2563eb] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white">Recommended</span> : null}<p className={`text-xs font-black uppercase tracking-[.18em] ${pkg.featured ? "text-blue-300" : "text-[#2563eb]"}`}>{pkg.pages}</p><h3 className="mt-4 text-3xl font-black">{pkg.name}</h3><p className={`mt-3 min-h-12 text-sm leading-6 ${pkg.featured ? "text-slate-300" : "text-[#607991]"}`}>{pkg.bestFor}</p><div className="mt-7 flex items-end gap-2"><span className="text-3xl font-black">{pkg.setup}</span><span className={`pb-1 text-sm ${pkg.featured ? "text-slate-400" : "text-[#7890a7]"}`}>setup</span></div><p className={`mt-2 text-sm font-extrabold ${pkg.featured ? "text-blue-300" : "text-[#1d5fd0]"}`}>+ {pkg.monthly} ongoing care</p><Link href="/pricing" className={`mt-7 w-full justify-center ${pkg.featured ? "button-primary" : "button-secondary"}`}>View Details<Icon name="arrow" className="h-4 w-4" /></Link></article>)}
+
+          <div className="mt-12 rounded-[28px] border border-[#cfe0f3] bg-[#eef6ff] px-7 py-8 md:px-10">
+            <p className="max-w-4xl text-lg font-bold leading-8 text-[#29455f]">
+              The goal is not to make every project as large as possible. If a
+              smaller first step can genuinely help your business move forward,
+              AtlasBlake will recommend it. If the bigger vision makes more
+              sense in phases, we will build a plan for that too.
+            </p>
           </div>
-          <p className="mt-7 text-center text-sm font-bold text-[#607991]">No surprise overages. Changes outside the agreed scope are explained and approved before additional work begins.</p>
         </div>
       </section>
 
