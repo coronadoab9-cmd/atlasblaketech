@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { services, site } from "./lib/marketing";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/services", "/work", "/work/nexdrain-plumbing", "/approach", "/about", "/start-a-project", "/privacy", "/terms", "/support"];
+  const routes = ["", "/services", "/work", "/work/nexdrain-plumbing", "/work/hoovers-rooters", "/approach", "/about", "/start-a-project", "/privacy", "/terms", "/support"];
   const serviceRoutes = services.map((service) => `/services/${service.slug}`);
   return [...routes, ...serviceRoutes].map((route) => ({
     url: `${site.url}${route}`,
