@@ -3,15 +3,32 @@ import Link from "next/link";
 
 export default function Brand({ inverse = false }: { inverse?: boolean }) {
   return (
-    <Link href="/" className="group flex items-center gap-3" aria-label="AtlasBlake Technologies home">
-      <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-[#06172d] shadow-[0_10px_28px_rgba(8,24,48,.22)] ring-1 ring-white/10">
-        <Image src="/brand-icon.png" alt="" fill sizes="48px" className="object-cover" priority />
+    <Link
+      href="/"
+      className="group inline-flex items-center gap-3.5"
+      aria-label="AtlasBlake Technologies home"
+    >
+      <span className="relative h-11 w-11 shrink-0 sm:h-12 sm:w-12">
+        <Image
+          src="/brand-icon.png"
+          alt=""
+          fill
+          sizes="48px"
+          className="object-contain"
+          priority
+        />
       </span>
+
       <span className="leading-none">
-        <span className={`block text-[15px] font-black tracking-[0.12em] ${inverse ? "text-white" : "text-[#081a33]"}`}>
-          ATLASBLAKE
+        <span className="block text-[17px] font-black tracking-[0.035em] sm:text-[18px]">
+          <span className={inverse ? "text-white" : "text-[#0A0F1E]"}>ATLAS</span>
+          <span className="text-[#2563EB]">BLAKE</span>
         </span>
-        <span className={`mt-1.5 block text-[9px] font-extrabold tracking-[0.29em] ${inverse ? "text-blue-300" : "text-[#2563eb]"}`}>
+        <span
+          className={`mt-1.5 block text-[8.5px] font-semibold tracking-[0.31em] sm:text-[9px] ${
+            inverse ? "text-[#E5E7EB]" : "text-[#475569]"
+          }`}
+        >
           TECHNOLOGIES
         </span>
       </span>

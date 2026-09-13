@@ -5,19 +5,104 @@ import { Icon } from "../components/Icons";
 import MarketingCta from "../components/MarketingCta";
 import Navbar from "../components/Navbar";
 import PageHero from "../components/PageHero";
-import SectionHeading from "../components/SectionHeading";
 
 export const metadata: Metadata = {
   title: "About AtlasBlake Technologies",
-  description: "AtlasBlake Technologies LLC helps businesses turn ideas into professional websites and practical technology through honest guidance, flexible scope, and budget-aware planning.",
+  description:
+    "AtlasBlake Technologies helps businesses turn ideas into professional websites and practical technology through clear guidance, thoughtful design, and flexible project planning.",
   alternates: { canonical: "/about" },
 };
 
-export default function AboutPage(){
-  return <main><Navbar/><PageHero eyebrow="About AtlasBlake" title="Built to help good businesses look and work their best." text="AtlasBlake Technologies LLC helps business owners turn ideas into professional websites and practical systems without unnecessary complexity, unclear scope, or inflated promises." primaryLabel="Start Your Project" primaryHref="/start-a-project" secondaryLabel="See Our Work" secondaryHref="/work"/>
-    <section className="bg-white px-6 py-24 md:py-32"><div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-[.88fr_1.12fr]"><SectionHeading eyebrow="Why AtlasBlake exists" title="Make professional technology more accessible to real businesses."/><div className="space-y-6 text-lg leading-8 text-[#58728c]"><p>Many business owners know what they want their company to become, but they do not have the time or technical background to turn that vision into a polished website or dependable digital system.</p><p>AtlasBlake bridges that gap. We listen to the business first, explain the options clearly, define the scope before development, and build around the result the company actually needs.</p><p className="font-extrabold text-[#173957]">The goal is not to sell the largest project. The goal is to help the business move forward with the right project. If the smarter answer is smaller, phased, or different from what was first imagined, AtlasBlake will say so.</p></div></div></section>
-    <section className="border-y border-[#dce7f2] bg-[#f6f9fd] px-6 py-24 md:py-32"><div className="mx-auto max-w-7xl"><SectionHeading eyebrow="What guides the work" title="Professional results with an honest process." text="The best project is one the client understands, the customer can use, and the business can keep building on."/><div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">{[["users","Listen before building","Understand the business, its customers, and its goals before recommending pages or features."],["layers","Build what is useful","Prioritize the highest-value experience instead of adding complexity just to make the project look larger."],["shield","Be clear and dependable","Explain scope, investment, ownership, responsibilities, and limitations honestly before launch."],["chart","Design for growth","Create a foundation that can support more services, locations, automation, portals, or software later."]].map(([icon,title,text])=><div key={title} className="marketing-card p-7"><Icon name={icon as "users"} className="h-7 w-7 text-[#2563eb]"/><h2 className="mt-5 text-xl font-black">{title}</h2><p className="mt-4 leading-7 text-[#607991]">{text}</p></div>)}</div></div></section>
-    <section className="bg-white px-6 py-24"><div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1.05fr_.95fr]"><div><p className="text-sm font-black uppercase tracking-[.22em] text-[#2563eb]">The AtlasBlake difference</p><h2 className="mt-5 text-balance text-4xl font-black tracking-[-.04em] md:text-6xl">A website partner that understands the business behind the screen.</h2><p className="mt-6 max-w-2xl text-lg leading-8 text-[#607991]">AtlasBlake brings together business understanding, accounting and operational experience, design, development, automation, and software capability. That means the relationship can grow beyond a public website when the company needs more.</p><Link href="/services" className="button-primary mt-9">Explore Services<Icon name="arrow" className="h-5 w-5"/></Link></div><div className="grid gap-4">{["Direct communication with the person doing the work","Custom solutions instead of recycled industry templates","Clear written scope before development begins","Clients maintain control of their business accounts and content","Support after launch","Ability to grow into portals, automation, and custom software"].map(item=><div key={item} className="flex items-center gap-3 rounded-xl border border-[#dce7f2] bg-[#f9fbfd] px-5 py-4 font-extrabold text-[#405c77]"><Icon name="check" className="h-5 w-5 text-[#2563eb]"/>{item}</div>)}</div></div></section>
-    <section className="relative overflow-hidden bg-[#06172d] px-6 py-24 text-white"><div className="hero-grid-dark absolute inset-0"/><div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.1fr_.9fr]"><div><p className="text-sm font-black uppercase tracking-[.24em] text-blue-300">Based in DFW</p><h2 className="mt-5 text-4xl font-black tracking-[-.045em] md:text-6xl">Local understanding. Professional work anywhere.</h2><p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">AtlasBlake Technologies is based in the Dallas–Fort Worth area and can work with businesses locally or remotely.</p></div><div className="rounded-[28px] border border-white/10 bg-white/[.05] p-8"><div className="flex gap-4"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-blue-500/20 text-blue-300"><Icon name="map" className="h-6 w-6"/></span><div><p className="font-black">Dallas–Fort Worth, Texas</p><p className="mt-2 leading-7 text-slate-300">Professional websites and business technology for companies ready to build, improve, and grow.</p></div></div></div></div></section>
-    <MarketingCta/><Footer/></main>;
+export default function AboutPage() {
+  return (
+    <main>
+      <Navbar />
+      <PageHero
+        eyebrow="About AtlasBlake"
+        title="Technology should make the business easier to run, not harder to understand."
+        text="AtlasBlake helps business owners turn ideas into professional websites and practical systems with clear communication, useful scope, and support after launch."
+        primaryLabel="Start a Project"
+        primaryHref="/start-a-project"
+        secondaryLabel="See Our Work"
+        secondaryHref="/work"
+      />
+
+      <section className="bg-white px-5 py-16 sm:px-6 md:py-20">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-start">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#2563EB] sm:text-sm">Why AtlasBlake exists</p>
+            <h2 className="mt-4 text-balance text-3xl font-black tracking-[-.04em] text-[#0A0F1E] sm:text-4xl md:text-5xl">
+              Bridge the gap between a business idea and a professional result.
+            </h2>
+          </div>
+          <div className="space-y-5 text-lg leading-8 text-[#64748B]">
+            <p>
+              Many business owners know what they want their company to become but do not have the time or technical background to turn that vision into a polished website or dependable digital system.
+            </p>
+            <p>
+              AtlasBlake listens first, explains the options clearly, and builds around the result the company actually needs. The client should understand what is being built, why it matters, and what happens after launch.
+            </p>
+            <p className="font-extrabold text-[#1F2937]">
+              The goal is not to sell the largest project. The goal is to help the business move forward with the right project.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-[#E5E7EB] bg-[#F8FAFC] px-5 py-16 sm:px-6 md:py-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-5 md:grid-cols-3">
+            {[
+              ["users", "Direct communication", "Work directly with someone who understands the goals and the decisions behind the project."],
+              ["layers", "Business-first thinking", "The company, its customers, and its future plans guide the design instead of a recycled template."],
+              ["chart", "Room to grow", "Start with a professional website and expand into automation, portals, or custom software when it makes sense."],
+            ].map(([icon, title, text]) => (
+              <article key={title} className="marketing-card p-6 md:p-7">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#EFF6FF] text-[#2563EB]">
+                  <Icon name={icon as "users"} className="h-5 w-5" />
+                </span>
+                <h2 className="mt-5 text-xl font-black text-[#1F2937]">{title}</h2>
+                <p className="mt-3 leading-7 text-[#64748B]">{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-5 py-16 sm:px-6 md:py-20">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#2563EB] sm:text-sm">What makes the relationship different</p>
+            <h2 className="mt-4 text-balance text-3xl font-black tracking-[-.04em] text-[#0A0F1E] sm:text-4xl md:text-5xl">
+              A website partner who understands the business behind the screen.
+            </h2>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-[#64748B]">
+              AtlasBlake combines business and operational thinking with design, development, automation, and software capability. That means the relationship can grow beyond a public website when the business needs more.
+            </p>
+            <Link href="/services" className="button-secondary mt-7">
+              Explore Services
+              <Icon name="arrow" className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="divide-y divide-[#E5E7EB] border-y border-[#E5E7EB]">
+            {[
+              "Custom solutions instead of recycled industry templates",
+              "Clear scope before development begins",
+              "Client control of business accounts and content",
+              "Support after launch",
+              "Ability to grow into portals, automation, and custom systems",
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-3 py-4 font-extrabold text-[#475569]">
+                <Icon name="check" className="h-4 w-4 shrink-0 text-[#2563EB]" />
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <MarketingCta />
+      <Footer />
+    </main>
+  );
 }
