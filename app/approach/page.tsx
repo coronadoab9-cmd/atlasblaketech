@@ -52,24 +52,24 @@ export default function ApproachPage() {
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {steps.map(([number, title, text]) => (
-              <article key={number} className="border-t-2 border-[#176bff] pt-5">
-                <p className="text-xs font-black tracking-[.18em] text-[#176bff]">{number}</p>
-                <h2 className="mt-4 text-2xl font-black tracking-[-.03em]">{title}</h2>
-                <p className="mt-3 leading-7 text-[#667b90]">{text}</p>
+              <article key={number} className="border-t-2 border-[#2563EB] pt-5">
+                <p className="text-xs font-black tracking-[.18em] text-[#2563EB]">{number}</p>
+                <h2 className="mt-4 text-2xl font-black tracking-[-.03em] text-[#1F2937]">{title}</h2>
+                <p className="mt-3 leading-7 text-[#64748B]">{text}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-y border-[#e1e9f1] bg-[#f7f9fc] px-5 py-16 sm:px-6 md:py-20">
+      <section className="border-y border-[#E5E7EB] bg-[#F8FAFC] px-5 py-16 sm:px-6 md:py-20">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
           <div>
-            <p className="text-xs font-black uppercase tracking-[.2em] text-[#176bff] sm:text-sm">Flexible without being vague</p>
-            <h2 className="mt-4 text-balance text-3xl font-black tracking-[-.04em] sm:text-4xl md:text-5xl">
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#2563EB] sm:text-sm">Flexible without being vague</p>
+            <h2 className="mt-4 text-balance text-3xl font-black tracking-[-.04em] text-[#0A0F1E] sm:text-4xl md:text-5xl">
               Change the scope when needed, not the standard of the work.
             </h2>
-            <p className="mt-5 max-w-xl text-lg leading-8 text-[#667b90]">
+            <p className="mt-5 max-w-xl text-lg leading-8 text-[#64748B]">
               A smaller first phase can be the right decision. A larger roadmap can be the right decision too. The important part is knowing what is included, why it matters, and what the investment is before development begins.
             </p>
           </div>
@@ -83,8 +83,8 @@ export default function ApproachPage() {
               "Client-controlled business accounts and content",
               "Room to expand as the business grows",
             ].map((item) => (
-              <div key={item} className="flex gap-3 rounded-xl border border-[#e1e9f1] bg-white p-4 text-sm font-extrabold leading-6 text-[#29445f]">
-                <Icon name="check" className="mt-0.5 h-4 w-4 shrink-0 text-[#176bff]" />
+              <div key={item} className="flex gap-3 rounded-xl border border-[#E5E7EB] bg-white p-4 text-sm font-extrabold leading-6 text-[#1F2937]">
+                <Icon name="check" className="mt-0.5 h-4 w-4 shrink-0 text-[#2563EB]" />
                 {item}
               </div>
             ))}
@@ -94,13 +94,13 @@ export default function ApproachPage() {
 
       <section className="bg-white px-5 py-16 sm:px-6 md:py-20">
         <div className="mx-auto max-w-4xl">
-          <p className="text-xs font-black uppercase tracking-[.2em] text-[#176bff] sm:text-sm">Common questions</p>
-          <h2 className="mt-4 text-3xl font-black tracking-[-.04em] sm:text-4xl">Simple answers before anyone commits.</h2>
-          <div className="mt-8 divide-y divide-[#e1e9f1] border-y border-[#e1e9f1]">
+          <p className="text-xs font-bold uppercase tracking-[.2em] text-[#2563EB] sm:text-sm">Common questions</p>
+          <h2 className="mt-4 text-3xl font-black tracking-[-.04em] text-[#0A0F1E] sm:text-4xl">Simple answers before anyone commits.</h2>
+          <div className="mt-8 divide-y divide-[#E5E7EB] border-y border-[#E5E7EB]">
             {faqs.map(([question, answer]) => (
               <details key={question} className="group py-5">
-                <summary className="cursor-pointer list-none pr-8 text-lg font-black text-[#18324d]">{question}</summary>
-                <p className="mt-3 max-w-3xl leading-7 text-[#667b90]">{answer}</p>
+                <summary className="cursor-pointer list-none pr-8 text-lg font-black text-[#1F2937]">{question}</summary>
+                <p className="mt-3 max-w-3xl leading-7 text-[#64748B]">{answer}</p>
               </details>
             ))}
           </div>
