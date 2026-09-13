@@ -5,227 +5,227 @@ import Footer from "./components/Footer";
 import { Icon } from "./components/Icons";
 import MarketingCta from "./components/MarketingCta";
 import Navbar from "./components/Navbar";
-import SectionHeading from "./components/SectionHeading";
-import WebsiteShowcase from "./components/WebsiteShowcase";
-import { processSteps, services } from "./lib/marketing";
 
 export const metadata: Metadata = {
-  title: "Professional Websites, Local SEO & Business Technology",
+  title: "Professional Websites & Business Technology",
   description:
-    "AtlasBlake Technologies helps businesses bring their ideas to life through professional websites, local SEO foundations, website care, automation, and custom technology.",
+    "AtlasBlake Technologies builds professional websites and practical business technology for companies that want to look established, work smarter, and keep growing.",
   alternates: { canonical: "/" },
 };
 
-const trustItems = [
-  "AtlasBlake Technologies LLC",
-  "Dallas–Fort Worth based",
-  "Custom design and development",
-  "Clear project scope",
-  "Client-controlled domain and business accounts",
-  "Continued support after launch",
+const services = [
+  {
+    icon: "browser" as const,
+    title: "Websites",
+    text: "Custom, mobile-first websites built around the business, its customers, and the next action that matters.",
+    href: "/services/website-design",
+  },
+  {
+    icon: "chart" as const,
+    title: "Local Growth",
+    text: "Search-friendly service and location content, analytics, reviews, and a foundation for steady local visibility.",
+    href: "/services/local-seo-growth",
+  },
+  {
+    icon: "shield" as const,
+    title: "Website Care",
+    text: "Managed hosting, updates, monitoring, backups, minor changes, and dependable support after launch.",
+    href: "/services/website-care",
+  },
+  {
+    icon: "code" as const,
+    title: "Custom Technology",
+    text: "Portals, automation, integrations, dashboards, and software when the business needs more than a public website.",
+    href: "/services/custom-technology",
+  },
 ];
 
 export default function HomePage() {
   return (
-    <main className="overflow-hidden bg-white text-[#071a33]">
+    <main className="overflow-hidden bg-white text-[#0b1f33]">
       <Navbar />
 
-      <section className="relative overflow-hidden border-b border-[#dce7f2] bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fd_100%)] px-6 pb-20 pt-16 md:pb-28 md:pt-24">
-        <div className="hero-grid absolute inset-0" />
-        <div className="absolute -left-32 top-24 h-[420px] w-[420px] rounded-full bg-blue-100/70 blur-[110px]" />
-        <div className="absolute -right-36 top-0 h-[520px] w-[520px] rounded-full bg-cyan-100/60 blur-[120px]" />
-
-        <div className="relative mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[.95fr_1.05fr]">
+      <section className="relative border-b border-[#e1e9f1] bg-white px-5 py-16 sm:px-6 md:py-24 lg:py-28">
+        <div className="hero-grid absolute inset-0 opacity-70" />
+        <div className="absolute -right-36 -top-20 h-[420px] w-[420px] rounded-full bg-blue-100/70 blur-[120px]" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
           <div>
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#cfe0f3] bg-white/85 px-4 py-2 text-xs font-black uppercase tracking-[0.17em] text-[#1d5fd0] shadow-sm backdrop-blur">
-              Professional websites • Practical technology
-            </div>
-            <h1 className="max-w-4xl text-balance text-5xl font-black leading-[.98] tracking-[-0.06em] text-[#06172d] md:text-7xl lg:text-[78px]">
-              Bring your business vision to life.
-            </h1>
-            <p className="mt-8 max-w-2xl text-lg leading-8 text-[#526f8e] md:text-xl md:leading-9">
-              AtlasBlake Technologies designs professional websites and practical business technology that help companies look established, earn customer trust, and grow with confidence.
+            <p className="text-xs font-black uppercase tracking-[.2em] text-[#176bff] sm:text-sm">
+              Websites first. Technology when you need more.
             </p>
-            <p className="mt-5 text-base font-extrabold text-[#183b65]">Clear planning. Thoughtful design. Fair, transparent pricing.</p>
-            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+            <h1 className="mt-5 max-w-3xl text-balance text-[44px] font-black leading-[.98] tracking-[-.055em] text-[#07182c] sm:text-6xl md:text-7xl lg:text-[76px]">
+              Professional websites built around your business.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-[#60758a] md:text-xl md:leading-9">
+              AtlasBlake helps businesses look more professional, earn customer trust, and build a stronger digital foundation without unnecessary complexity.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link href="/start-a-project" className="button-primary">
-                Start Your Project<Icon name="arrow" className="h-5 w-5" />
+                Start a Project
+                <Icon name="arrow" className="h-4 w-4" />
               </Link>
-              <Link href="/work/nexdrain-plumbing" className="button-secondary">
-                See the NexDrain Project<Icon name="arrow" className="h-5 w-5" />
+              <Link href="/work" className="button-secondary">
+                View Our Work
               </Link>
             </div>
-            <div className="mt-9 flex flex-wrap gap-x-7 gap-y-3 text-sm font-bold text-[#617b95]">
-              {["Websites", "Local SEO", "Website Care", "Custom Technology"].map((item) => (
-                <span key={item} className="flex items-center gap-2"><Icon name="check" className="h-4 w-4 text-[#2563eb]" />{item}</span>
-              ))}
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold text-[#667b90]">
+              <span>Dallas-Fort Worth</span>
+              <span className="text-[#b1bfcc]">•</span>
+              <span>Custom design</span>
+              <span className="text-[#b1bfcc]">•</span>
+              <span>Managed after launch</span>
             </div>
           </div>
 
-          <WebsiteShowcase />
-        </div>
-      </section>
-
-      <section className="border-b border-[#e2ebf4] bg-white px-6 py-7">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-8 gap-y-3 text-center text-sm font-extrabold text-[#48647e]">
-          {trustItems.map((item, index) => <span key={item} className="flex items-center gap-3"><span className="text-[#2563eb]">{index === 0 ? "◆" : "•"}</span>{item}</span>)}
-        </div>
-      </section>
-
-      <section className="bg-white px-6 py-24 md:py-32">
-        <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[.9fr_1.1fr] lg:items-start">
-          <SectionHeading
-            eyebrow="Built around your business"
-            title="Your company deserves more than a generic website."
-            text="A website should reflect the quality of the business, explain what makes it different, and make it easy for customers to take the next step."
-          />
-          <div className="rounded-[30px] border border-[#dce7f2] bg-[#f7fafd] p-7 shadow-[0_20px_60px_rgba(23,62,103,.08)] md:p-10">
-            <p className="text-lg leading-8 text-[#58728c]">AtlasBlake works directly with business owners to turn their goals, ideas, and experience into a professional digital presence. We take time to understand the company before recommending pages, features, or technology.</p>
-            <p className="mt-6 text-lg font-extrabold leading-8 text-[#173957]">You will know what is being built, why it matters, what it costs, and what happens after launch.</p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:gap-5">
+            <ProjectPreview
+              href="/work/nexdrain-plumbing"
+              image="/portfolio/nexdrain/trucks.jpg"
+              logo="/portfolio/nexdrain/logo.png"
+              alt="NexDrain Plumbing website project"
+              label="NexDrain Plumbing"
+              detail="Website • Local SEO • Service pages"
+            />
+            <ProjectPreview
+              href="/work/hoovers-rooters"
+              image="/portfolio/hoovers-rooters/homepage.png"
+              alt="Hoover's Rooters website project"
+              label="Hoover's Rooters"
+              detail="Website • Local pages • Managed care"
+              dark
+            />
           </div>
         </div>
       </section>
 
-      <section className="border-y border-[#dce7f2] bg-[#f6f9fd] px-6 py-24 md:py-32">
+      <section className="bg-[#f7f9fc] px-5 py-16 sm:px-6 md:py-20">
         <div className="mx-auto max-w-7xl">
-          <SectionHeading eyebrow="What we do" title="Everything needed for a stronger digital presence." text="Start with a professional website. Add better growth tools, support, automation, or custom systems when the business is ready." />
-          <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, index) => (
-              <Link key={service.slug} href={`/services/${service.slug}`} className={`marketing-card group p-7 md:p-8 ${index === 0 ? "lg:col-span-2 lg:grid lg:grid-cols-[auto_1fr] lg:gap-8" : ""}`}>
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#eaf3ff] text-[#2563eb] transition group-hover:bg-[#2563eb] group-hover:text-white"><Icon name={service.icon} className="h-6 w-6" /></span>
-                <div className={index === 0 ? "lg:-mt-1" : ""}>
-                  <p className="mt-7 text-xs font-black uppercase tracking-[.18em] text-[#2563eb] lg:mt-0">{service.eyebrow}</p>
-                  <h3 className="mt-3 text-2xl font-black tracking-[-.025em] text-[#071a33]">{service.title}</h3>
-                  <p className="mt-4 leading-7 text-[#5c7690]">{service.summary}</p>
-                  <span className="mt-7 inline-flex items-center gap-2 text-sm font-black text-[#1d5fd0]">Explore service<Icon name="arrow" className="h-4 w-4 transition group-hover:translate-x-1" /></span>
-                </div>
+          <div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr] lg:items-end">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[.2em] text-[#176bff] sm:text-sm">What we do</p>
+              <h2 className="mt-4 text-balance text-3xl font-black tracking-[-.04em] text-[#07182c] sm:text-4xl md:text-5xl">
+                A stronger digital presence, without the clutter.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-[#667b90] lg:justify-self-end">
+              Start with the public-facing website. Add search support, ongoing care, automation, or custom systems only when they make sense for the business.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-[#e1e9f1] bg-[#e1e9f1] md:grid-cols-2 lg:grid-cols-4">
+            {services.map((service) => (
+              <Link key={service.title} href={service.href} className="group bg-white p-6 transition hover:bg-[#fbfdff] md:p-7">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#edf4ff] text-[#176bff]">
+                  <Icon name={service.icon} className="h-5 w-5" />
+                </span>
+                <h3 className="mt-5 text-xl font-black tracking-[-.02em]">{service.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-[#667b90]">{service.text}</p>
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#176bff]">
+                  Learn more
+                  <Icon name="arrow" className="h-4 w-4 transition group-hover:translate-x-1" />
+                </span>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[#06172d] px-6 py-24 text-white md:py-32">
-        <div className="hero-grid-dark absolute inset-0" />
-        <div className="absolute -right-32 top-0 h-[560px] w-[560px] rounded-full bg-blue-500/20 blur-[120px]" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-[.88fr_1.12fr]">
+      <section className="bg-white px-5 py-16 sm:px-6 md:py-24">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
           <div>
-            <p className="text-sm font-black uppercase tracking-[.24em] text-blue-300">Featured website</p>
-            <h2 className="mt-5 text-balance text-4xl font-black leading-[1.05] tracking-[-.045em] md:text-6xl">A professional digital home for NexDrain Plumbing.</h2>
-            <p className="mt-7 text-lg leading-8 text-slate-300">NexDrain needed a website that matched the professionalism of its work and made it easier for DFW homeowners to understand services, see real project experience, and request help.</p>
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              {["Complete website redesign", "Mobile-first customer experience", "Service and location pages", "Project and review proof", "Analytics and Search Console", "Continued website management"].map((capability) => <div key={capability} className="flex items-center gap-3 text-sm font-bold text-slate-200"><span className="grid h-7 w-7 place-items-center rounded-lg bg-white/10 text-blue-300"><Icon name="check" className="h-4 w-4" /></span>{capability}</div>)}
-            </div>
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link href="/work/nexdrain-plumbing" className="button-primary">View Case Study<Icon name="arrow" className="h-5 w-5" /></Link>
-              <a href="https://nexdrainplumbing.net" target="_blank" rel="noreferrer" className="button-dark-outline">Visit Live Website</a>
-            </div>
+            <p className="text-xs font-black uppercase tracking-[.2em] text-[#176bff] sm:text-sm">Why AtlasBlake</p>
+            <h2 className="mt-4 text-balance text-3xl font-black tracking-[-.04em] text-[#07182c] sm:text-4xl md:text-5xl">
+              A technology partner that starts with the business.
+            </h2>
+            <p className="mt-5 max-w-xl text-lg leading-8 text-[#667b90]">
+              The goal is not to make every project bigger. It is to identify what will genuinely help, build it well, and leave room to grow.
+            </p>
+            <Link href="/approach" className="button-secondary mt-7">
+              See How We Work
+            </Link>
           </div>
-          <div className="overflow-hidden rounded-[30px] border border-white/10 bg-white/[.05] p-3 shadow-[0_30px_90px_rgba(0,0,0,.3)]">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-[22px]">
-              <Image src="/portfolio/nexdrain/trucks.jpg" alt="NexDrain Plumbing website project" fill sizes="(max-width: 1024px) 100vw, 620px" className="object-cover" />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgba(4,18,35,.9))]" />
-              <div className="absolute inset-x-0 bottom-0 p-6 md:p-8"><Image src="/portfolio/nexdrain/logo.png" alt="NexDrain Plumbing" width={240} height={61} className="h-auto w-[190px] md:w-[240px]" /><p className="mt-3 max-w-lg text-sm leading-6 text-slate-200">A complete service-business website built for trust, clarity, local visibility, and customer action.</p></div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="bg-white px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl">
-          <SectionHeading eyebrow="Our process" title="Your idea. A clear plan. A professional result." text="A typical website project is estimated at 5–7 weeks from kickoff, with clear review points at every major stage." />
-          <div className="mt-16 grid gap-5 md:grid-cols-2 lg:grid-cols-5">
-            {processSteps.map((step) => <div key={step.number} className="rounded-2xl border border-[#dce7f2] bg-[#fbfdff] p-6"><p className="text-xs font-black tracking-[.2em] text-[#2563eb]">{step.number}</p><h3 className="mt-5 text-xl font-black">{step.title}</h3><p className="mt-4 text-sm leading-6 text-[#607991]">{step.text}</p></div>)}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-y border-[#dce7f2] bg-[#f6f9fd] px-6 py-24 md:py-32">
-        <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
-          <SectionHeading eyebrow="Why AtlasBlake" title="Technology should support your dream—not complicate it." text="Professional results should not require confusing language, unnecessary features, or surprise costs." />
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-3">
             {[
-              ["users", "Direct communication", "Work with someone who listens to the goals and understands the decisions behind the project."],
-              ["layers", "Built around the business", "The company’s identity, customers, services, and future plans guide the design."],
-              ["shield", "Flexible, thoughtful scope", "Recommendations are based on what the business actually needs, what matters most, and what makes sense for the available budget."],
-              ["chart", "Room to grow", "Start with a professional website and add portals, automation, or software when the company is ready."],
-            ].map(([icon, title, text]) => <div key={title} className="rounded-2xl border border-[#dce7f2] bg-white p-6 shadow-[0_12px_35px_rgba(23,62,103,.06)]"><span className="grid h-11 w-11 place-items-center rounded-xl bg-[#eaf3ff] text-[#2563eb]"><Icon name={icon as "layers"} className="h-5 w-5" /></span><h3 className="mt-5 text-xl font-black">{title}</h3><p className="mt-3 leading-7 text-[#607991]">{text}</p></div>)}
+              ["01", "Listen first", "Understand the business, its customers, and the real goal before deciding what to build."],
+              ["02", "Build what is useful", "Prioritize the pages, features, and tools that create the most value now."],
+              ["03", "Stay after launch", "Keep the website dependable and help it evolve as the business grows."],
+            ].map(([number, title, text]) => (
+              <article key={number} className="border-t-2 border-[#176bff] pt-5">
+                <p className="text-xs font-black tracking-[.18em] text-[#176bff]">{number}</p>
+                <h3 className="mt-4 text-xl font-black">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-[#667b90]">{text}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-white px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
-            <div>
-              <SectionHeading
-                eyebrow="A different approach"
-                title="Start with what your business needs - not a preset package."
-                text="Every business is in a different place. AtlasBlake starts by understanding the goal, the priorities, and what feels realistic before recommending a scope."
-              />
-
-              <Link href="/approach" className="button-primary mt-8">
-                See How We Work
-                <Icon name="arrow" className="h-5 w-5" />
-              </Link>
-            </div>
-
-            <div className="grid gap-5 md:grid-cols-3">
-              {[
-                {
-                  number: "01",
-                  title: "Start with the business",
-                  text: "We first learn what you are trying to accomplish, what is holding the business back, and what would make the biggest difference."
-                },
-                {
-                  number: "02",
-                  title: "Shape the scope to the budget",
-                  text: "You do not have to fit into a preset website package. We can prioritize the work around the goals and investment that make sense for your company."
-                },
-                {
-                  number: "03",
-                  title: "Build in practical stages",
-                  text: "If the entire vision does not need to happen at once, we can create a strong first phase and build on it as the business grows."
-                }
-              ].map((item) => (
-                <article
-                  key={item.number}
-                  className="rounded-[26px] border border-[#dce7f2] bg-[#f9fbfd] p-7"
-                >
-                  <p className="text-xs font-black tracking-[.2em] text-[#2563eb]">
-                    {item.number}
-                  </p>
-                  <h3 className="mt-5 text-2xl font-black tracking-[-.025em]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-4 text-sm leading-7 text-[#607991]">
-                    {item.text}
-                  </p>
-                </article>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-12 rounded-[28px] border border-[#cfe0f3] bg-[#eef6ff] px-7 py-8 md:px-10">
-            <p className="max-w-4xl text-lg font-bold leading-8 text-[#29455f]">
-              The goal is not to make every project as large as possible. If a
-              smaller first step can genuinely help your business move forward,
-              AtlasBlake will recommend it. If the bigger vision makes more
-              sense in phases, we will build a plan for that too.
+      <section className="border-y border-white/10 bg-[#07182c] px-5 py-16 text-white sm:px-6 md:py-20">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-3xl">
+            <p className="text-xs font-black uppercase tracking-[.2em] text-blue-300 sm:text-sm">More than websites</p>
+            <h2 className="mt-4 text-balance text-3xl font-black tracking-[-.04em] sm:text-4xl md:text-5xl">
+              When the business needs more, AtlasBlake can build beyond the website.
+            </h2>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
+              Customer portals, dashboards, automation, integrations, mobile workflows, and custom software can be added under a clear, separate scope.
             </p>
           </div>
+          <Link href="/services/custom-technology" className="button-dark-outline shrink-0">
+            Explore Custom Technology
+            <Icon name="arrow" className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 
-      <section className="border-t border-[#dce7f2] bg-[#f6f9fd] px-6 py-24">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_.95fr]">
-          <div><p className="text-sm font-black uppercase tracking-[.22em] text-[#2563eb]">Beyond the website</p><h2 className="mt-5 text-balance text-4xl font-black tracking-[-.04em] md:text-6xl">Need something built around your workflow?</h2><p className="mt-6 max-w-2xl text-lg leading-8 text-[#607991]">AtlasBlake can create customer portals, automated documents, dashboards, mobile workflows, integrations, and custom software in practical stages.</p><Link href="/services/custom-technology" className="button-primary mt-9">Discuss a Custom Solution<Icon name="arrow" className="h-5 w-5" /></Link></div>
-          <div className="grid gap-4 sm:grid-cols-2">{["Customer and employee portals", "Business dashboards", "Mobile and tablet tools", "Automated forms and documents", "System integrations", "Custom business software"].map((item)=><div key={item} className="flex items-center gap-3 rounded-xl border border-[#dce7f2] bg-white px-5 py-4 font-extrabold text-[#29455f]"><Icon name="check" className="h-5 w-5 text-[#2563eb]" />{item}</div>)}</div>
-        </div>
-      </section>
-
-      <MarketingCta />
+      <MarketingCta
+        eyebrow="Ready when you are"
+        title="Let’s build what your business actually needs."
+        text="Start with the goal, the problem, or the idea. AtlasBlake will help turn it into a clear plan and a professional result."
+      />
       <Footer />
     </main>
+  );
+}
+
+function ProjectPreview({
+  href,
+  image,
+  logo,
+  alt,
+  label,
+  detail,
+  dark = false,
+}: {
+  href: string;
+  image: string;
+  logo?: string;
+  alt: string;
+  label: string;
+  detail: string;
+  dark?: boolean;
+}) {
+  return (
+    <Link href={href} className="project-frame group block overflow-hidden">
+      <div className={`relative aspect-[4/3] ${dark ? "bg-black" : "bg-[#eef3f8]"}`}>
+        <Image src={image} alt={alt} fill sizes="(max-width: 640px) 100vw, 480px" className={`object-cover transition duration-500 group-hover:scale-[1.025] ${dark ? "object-top" : ""}`} />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07182c]/85 via-transparent to-transparent" />
+        {logo ? (
+          <div className="absolute inset-x-0 bottom-0 p-5">
+            <Image src={logo} alt="" width={190} height={60} className="h-auto w-[150px]" />
+          </div>
+        ) : null}
+      </div>
+      <div className="flex items-center justify-between gap-4 p-5">
+        <div>
+          <p className="font-black text-[#0b1f33]">{label}</p>
+          <p className="mt-1 text-xs font-bold text-[#75889a]">{detail}</p>
+        </div>
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#d7e2ec] text-[#176bff] transition group-hover:border-[#176bff] group-hover:bg-[#176bff] group-hover:text-white">
+          <Icon name="arrow" className="h-4 w-4" />
+        </span>
+      </div>
+    </Link>
   );
 }
