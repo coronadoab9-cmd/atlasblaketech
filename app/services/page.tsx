@@ -64,18 +64,18 @@ export default function ServicesPage() {
             {coreServices.map((service) => (
               <Link key={service.title} href={service.href} className="marketing-card group p-6 md:p-8">
                 <div className="flex items-start justify-between gap-6">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#edf4ff] text-[#176bff]">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#EFF6FF] text-[#2563EB]">
                     <Icon name={service.icon} className="h-5 w-5" />
                   </span>
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#d7e2ec] text-[#176bff] transition group-hover:border-[#176bff] group-hover:bg-[#176bff] group-hover:text-white">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#CBD5E1] text-[#2563EB] transition group-hover:border-[#2563EB] group-hover:bg-[#2563EB] group-hover:text-white">
                     <Icon name="arrow" className="h-4 w-4" />
                   </span>
                 </div>
-                <h2 className="mt-6 text-2xl font-black tracking-[-.03em]">{service.title}</h2>
-                <p className="mt-3 max-w-xl leading-7 text-[#667b90]">{service.text}</p>
+                <h2 className="mt-6 text-2xl font-black tracking-[-.03em] text-[#1F2937]">{service.title}</h2>
+                <p className="mt-3 max-w-xl leading-7 text-[#64748B]">{service.text}</p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   {service.points.map((point) => (
-                    <span key={point} className="rounded-full bg-[#f2f6fa] px-3 py-1.5 text-xs font-extrabold text-[#526b83]">
+                    <span key={point} className="rounded-full bg-[#F8FAFC] px-3 py-1.5 text-xs font-extrabold text-[#475569] ring-1 ring-[#E5E7EB]">
                       {point}
                     </span>
                   ))}
@@ -86,11 +86,11 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className="border-y border-[#e1e9f1] bg-[#f7f9fc] px-5 py-16 sm:px-6 md:py-20">
+      <section className="border-y border-[#E5E7EB] bg-[#F8FAFC] px-5 py-16 sm:px-6 md:py-20">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
           <div>
-            <p className="text-xs font-black uppercase tracking-[.2em] text-[#176bff] sm:text-sm">A practical path</p>
-            <h2 className="mt-4 text-balance text-3xl font-black tracking-[-.04em] sm:text-4xl md:text-5xl">
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#2563EB] sm:text-sm">A practical path</p>
+            <h2 className="mt-4 text-balance text-3xl font-black tracking-[-.04em] text-[#0A0F1E] sm:text-4xl md:text-5xl">
               The website can be the beginning, not the limit.
             </h2>
           </div>
@@ -103,8 +103,8 @@ export default function ServicesPage() {
               "Workflow automation",
               "Custom business systems",
             ].map((item) => (
-              <div key={item} className="flex items-center gap-3 rounded-xl border border-[#e1e9f1] bg-white px-4 py-3.5 text-sm font-extrabold text-[#29445f]">
-                <Icon name="check" className="h-4 w-4 shrink-0 text-[#176bff]" />
+              <div key={item} className="flex items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-4 py-3.5 text-sm font-extrabold text-[#1F2937]">
+                <Icon name="check" className="h-4 w-4 shrink-0 text-[#2563EB]" />
                 {item}
               </div>
             ))}
