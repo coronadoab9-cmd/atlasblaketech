@@ -7,13 +7,58 @@ import PageHero from "../components/PageHero";
 
 export const metadata: Metadata = {
   title: "Start a Project",
-  description: "Tell AtlasBlake Technologies about your business, website goals, local growth needs, automation idea, portal, or custom technology project.",
+  description:
+    "Tell AtlasBlake Technologies about your business, website goals, local growth needs, automation idea, portal, or custom technology project.",
   alternates: { canonical: "/start-a-project" },
 };
 
-export default function StartProjectPage(){
-  return <main><Navbar/><PageHero eyebrow="Start a project" title="Tell us what you want your business to become." text="You do not need a technical specification. Share your company, your goals, what is not working today, and what a successful result would look like."/>
-    <section className="bg-[#f6f9fd] px-6 py-24 md:py-32"><div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[.72fr_1.28fr]"><div><p className="text-sm font-black uppercase tracking-[.22em] text-[#2563eb]">Start the conversation</p><h2 className="mt-5 text-4xl font-black tracking-[-.04em]">Bring the vision. We will help shape the plan.</h2><p className="mt-5 leading-7 text-[#607991]">AtlasBlake reviews the business goal first, then helps shape the right pages, features, content, project stages, and support level around the priorities and budget that make sense for the company.</p><div className="mt-9 space-y-4"><ContactCard icon="mail" title="Project inquiries" value="contact@atlasblaketech.com" href="mailto:contact@atlasblaketech.com"/><ContactCard icon="map" title="Location" value="Dallas–Fort Worth, Texas"/><ContactCard icon="clock" title="First step" value="A focused conversation about the business and the desired result."/></div><div className="mt-8 rounded-2xl border border-[#bfd5ef] bg-[#edf5ff] p-6"><p className="font-black text-[#173957]">What happens next?</p><p className="mt-3 text-sm leading-6 text-[#516f8c]">Your inquiry is reviewed, the most important goals and constraints are identified, and a discovery conversation can be scheduled before a written scope and quote are prepared. If the full vision should be phased, we can talk through that too.</p></div></div><ContactForm/></div></section><Footer/></main>;
+export default function StartProjectPage() {
+  return (
+    <main>
+      <Navbar />
+      <PageHero
+        eyebrow="Start a project"
+        title="Start with the business goal."
+        text="You do not need a technical specification. Tell us what your company does, what you want to improve, and what a successful result would look like."
+      />
+
+      <section className="bg-[#f7f9fc] px-5 py-16 sm:px-6 md:py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.68fr_1.32fr] lg:gap-14">
+          <aside className="lg:sticky lg:top-24 lg:self-start">
+            <p className="text-xs font-black uppercase tracking-[.2em] text-[#176bff] sm:text-sm">What happens next</p>
+            <h2 className="mt-4 text-3xl font-black tracking-[-.04em] sm:text-4xl">
+              A focused conversation before a proposal.
+            </h2>
+            <p className="mt-5 leading-7 text-[#667b90]">
+              AtlasBlake reviews the goal, identifies the important constraints, and follows up directly. If the project should be simplified or phased, that can be part of the conversation too.
+            </p>
+
+            <div className="mt-8 divide-y divide-[#e1e9f1] border-y border-[#e1e9f1]">
+              <InfoRow icon="mail" title="Email" value="contact@atlasblaketech.com" />
+              <InfoRow icon="map" title="Based in" value="Dallas-Fort Worth, Texas" />
+              <InfoRow icon="clock" title="First step" value="Business goals, priorities, and fit" />
+            </div>
+          </aside>
+
+          <ContactForm />
+        </div>
+      </section>
+
+      <Footer />
+    </main>
+  );
 }
 
-function ContactCard({icon,title,value,href}:{icon:"mail"|"map"|"clock";title:string;value:string;href?:string}){const content=<><span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#eaf3ff] text-[#2563eb]"><Icon name={icon} className="h-5 w-5"/></span><div><p className="text-xs font-black uppercase tracking-[.16em] text-[#7890a7]">{title}</p><p className="mt-1 font-extrabold text-[#29455f]">{value}</p></div></>;return href?<a href={href} className="flex gap-4 rounded-2xl border border-[#dce7f2] bg-white p-5 transition hover:border-[#a8c8eb]">{content}</a>:<div className="flex gap-4 rounded-2xl border border-[#dce7f2] bg-white p-5">{content}</div>}
+function InfoRow({ icon, title, value }: { icon: "mail" | "map" | "clock"; title: string; value: string }) {
+  return (
+    <div className="flex gap-3 py-4">
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#edf4ff] text-[#176bff]">
+        <Icon name={icon} className="h-4 w-4" />
+      </span>
+      <div>
+        <p className="text-xs font-black uppercase tracking-[.14em] text-[#8393a3]">{title}</p>
+        <p className="mt-1 text-sm font-extrabold text-[#29445f]">{value}</p>
+      </div>
+    </div>
+  );
+}
