@@ -42,7 +42,7 @@ const services = [
 
 export default function HomePage() {
   return (
-    <main className="overflow-hidden bg-white text-[#1F2937]">
+    <main className="overflow-x-clip bg-white text-[#1F2937]">
       <Navbar />
 
       <section className="relative overflow-hidden border-b border-white/10 bg-[#0A0F1E] px-5 py-14 text-white sm:px-6 md:py-20 lg:py-24">
